@@ -21,14 +21,7 @@
 | Breadboard | 1 | Full-size solderless breadboard | [Amazon.de (exact)](https://www.amazon.de/-/en/Breadboard-Solderless-Prototype-Distribution-Connection/dp/B01MCRZFE5/ref=sr_1_4?crid=2D9Y4A3H3L4R6&dib=eyJ2IjoiMSJ9.5Qn7bL8xkXnE7VvS5oVtKQ3xZQmKzQk8y2F7m9oG5d8H8bJ3a2bKxQk7l0JwP7wY.3k0R8Xy1bGg5cPp8y3jv0i2l5r6m7n8o9p0q1r2s3t4u5v6w7x8y9z0&dib_tag=se&keywords=breadboard&qid=1765730527&s=industrial&sprefix=breadboard%2Cindustrial%2C87&sr=1-4) |
 | Breadboard power module | 1 | MB102-style PSU module | [Amazon.de (exact)](https://www.amazon.de/Hailege-Supply-Prototype-Breadboard-6-5-12V/dp/B07XPTR9BP/ref=sr_1_1_sspa?crid=2D9Y4A3H3L4R6&dib=eyJ2IjoiMSJ9.5Qn7bL8xkXnE7VvS5oVtKQ3xZQmKzQk8y2F7m9oG5d8H8bJ3a2bKxQk7l0JwP7wY.3k0R8Xy1bGg5cPp8y3jv0i2l5r6m7n8o9p0q1r2s3t4u5v6w7x8y9z0&dib_tag=se&keywords=breadboard&qid=1765730527&s=industrial&sprefix=breadboard%2Cindustrial%2C87&sr=1-1-spons&aref=hqpxwahjo9&sp_csd=d2lkZ2V0TmFtZT1zcF9hdGY&psc=1) |
 | Battery shield / holder | 1 | 4×18650 “Battery shield” | [Amazon.de (exact)](http://amazon.de/-/en/diymore-Shield-V9-Expansion-Compatible/dp/B082MFWC7H/ref=sr_1_3?crid=1QEVFJ0VJ1WPH&dib=eyJ2IjoiMSJ9.bkZ3xkqH3Vq0q9z7mXyYFJd5B6Y2dJw9S0f5kWw3mVn1t3p3tQw2gXx1bK2pW1pQ.9X2W1Z0Y8X7W6V5U4T3S2R1Q0P9O8N7M6L5K4J3I2H1G0F9E8D7C6B5A4&dib_tag=se&keywords=18650+diymore&qid=1765730824&sprefix=18650+diymor%2Caps%2C112&sr=8-3) |
-| 18650 Li-ion cells | 4 | Only needed if building the battery-powered version | — |
-
-### Missing but (likely) required
-The electronics photo includes one small red module that is not labeled in the PDF.  
-In your old BOM this was described as a MOSFET driver, and you generally need one to switch the electromagnet safely from a GPIO.
-
-| Item | Qty | Notes |
-|---|---:|---|
+| 18650 Li-ion cells | 4 | Usually come included with the battery shield | — |
 | MOSFET trigger / low-side switch module | 1 | Use any 3.3V-logic compatible MOSFET driver board with flyback diode (or add diode yourself). |
 
 ---
@@ -59,13 +52,6 @@ In your old BOM this was described as a MOSFET driver, and you generally need on
 | Short mini jack cable | 1 | Male–male | — |
 | USB cable | 1 | USB-A ↔ USB-A (or splice/join two existing cables) | — |
 | Micro-USB cables | 2 | “to be cannibalized” (per manual) | — |
-
----
-
-## 4) Notes
-
-- If you want to keep the BOM strictly “as in the manual”, don’t add resistors/caps/diodes here.
-- If you want a “recommended electronics” add-on list (LED data resistor + bulk cap + proper flyback diode + wire gauges), tell me and I’ll add a short section.
 
 ---
 
