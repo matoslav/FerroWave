@@ -1,480 +1,73 @@
 # FerroWave Bill of Materials (BOM)
 
-Complete list of parts needed to build FerroWave.
-
-**Project**: FerroWave - Ferrofluid Visualizer  
+**Project**: FerroWave — Ferrofluid Visualizer  
 **Author**: Makarov87  
-**Crowdfunded by**: MakerWorld Community  
-**Version**: 2.0 (Battery-Powered Edition)
+**Version**: 2.1 (Manual v1 link-aligned)
+
+> This BOM is aligned to the “LIST OF MATERIALS” pages in the User Manual v1 PDF, and includes the embedded Amazon.de links found there.
 
 ---
 
-## Quick Summary
+## 1) Essential electronics
 
-| Category | Estimated Cost | Notes |
-|----------|---------------|-------|
-| Electronics | $40-60 USD | Main components |
-| Power System | $15-25 USD | Batteries and holder |
-| Hardware/Misc | $10-20 USD | Wires, resistors, connectors |
-| **Total** | **$65-105 USD** | Excluding ferrofluid & display |
+| Item | Qty | Spec / notes | Link |
+|---|---:|---|---|
+| ESP32-A1S Audio Kit board (AiThinker) | 1 | ESP32-A1S “Audio Kit” board | [Amazon.de (exact)](https://www.amazon.de/-/en/ESP32-Audio-ESP32-A1S-Development-Module/dp/B0DF2W3B8K/ref=sr_1_1?crid=3ILST14LFKIBP&dib=eyJ2IjoiMSJ9.QCl-xcEs6H9zXyT4r4NP_BQyL2vVqB5S58lxmq-MoH1RbVI9NsvkT_lVyvSrA2vUFgiAlpXxVRy3ZKcbHODR1gfGzK7EfvK1-7qAOBZbhKuPt5h6wZoA2gG0v0u7VziQ6wn8d9NUqz5-ICaO_vqYwWSuIIIfgWwp0XJ15Ijp6gAUp74c9uEaqDk7OMs7u4mzo4OZVaJDTlsgsJKCAWZ_4l0g38c.3kB0pQHCrYyL5jQkHufBbnVw2VTz9zUu6aPcdI52n0o&dib_tag=se&keywords=esp32+a1s&qid=1765730917&sprefix=esp32+a1s%2Caps%2C116&sr=8-1) |
+| Audio power amp | 1 | 10W module (the one used in the manual) | [Amazon.de (exact)](https://www.amazon.de/-/en/DollaTek-Amplifier-PAM8406-Digital-Immersion/dp/B07KPTNPLJ/ref=sr_1_4?crid=HZTQZDH2PZES&dib=eyJ2IjoiMSJ9.AO4q4tNNPvT_3Y8d-9oF_S55UQ4dS3MdYI6DL1m0pU28a4Tsgp0sylK0vRy0vY3FiqZwCS2Y2wX4aTd1h5zGb7eZyJd0Xb1nqOGH-nZETDgYny0W2B8gZL-4kQZ4fFfS0rGuxf8SB-c8XH4cxa1d5dkh_JI29JswjE8o7vL3tqvQ8tWf4m_2Q2Y2k1Y8gT3YwT0p5N9M2wY8d0nKCMiA5JDLlJw.6sRrW3q2f5p4Q4e0xvH0Yf0yWk8l0yP-2XQ7aW5o4Y4&dib_tag=se&keywords=pam+audio+amp&qid=1765730760&sprefix=pam+audio+amp%2Caps%2C99&sr=8-4) |
+| Speakers | 2 | Speaker pair as used in the manual | [Amazon.de (exact)](https://www.amazon.de/-/en/sourcingmap-Internal-Magnet-Speaker-Loudspeaker-black/dp/B01BB4YLI0/ref=sr_1_4?crid=3G8MUSODU7Q3E&dib=eyJ2IjoiMSJ9.z7y0JqkmuHqBf3m8Yl9l0pF3m0b8b0B8w3sVv7rJZV6r8zQkHh0m1z5y6n7ZyYbS.1r9m5m5p6m0q5f0Yg7h6i5j4k3l2m1n0o9p8q7r6s5t4u3v2w1x0y9z8&dib_tag=se&keywords=3+inch+10w+speakers&qid=1765730213&sprefix=3+inch+10w+speakers%2Caps%2C109&sr=8-4) |
+| LED ring | 1 | “24-bit LED ring (NeoPixel)” | [Amazon.de (exact)](https://www.amazon.de/-/en/dp/B09K58DMMX?ref_=ppx_hzsearch_conn_dt_b_fed_asin_title_1) |
+| Electromagnet | 1 | 5V electromagnet | [Amazon.de (exact)](http://amazon.de/-/en/Electromagnet-operating-voltage-maximum-electromagnet/dp/B0D76DCRVW/ref=sr_1_7?crid=2SRAAB6X4Y2JM&dib=eyJ2IjoiMSJ9.j0CwL8e1m6wqvXv1b7sS0kVQq2o7iUq5f8o0rKjVhJgP0b2xgQm0YdQkKx6q9oF_.XxjX3D2VJ0m2v4Y2GZ2vG0Gf1f6xJ9M1cS8u9yW0bQ&dib_tag=se&keywords=5v+elektromagnet&qid=1765730317&sprefix=5v+elektromagnet%2Caps%2C116&sr=8-7) |
+| Neodymium magnets | 2 | “2x neodymium magnets” | [Amazon.de (exact)](https://www.amazon.de/-/en/dp/B0CPPQ7D4Z?ref_=ppx_hzsearch_conn_dt_b_fed_asin_title_2&th=1) |
+| Breadboard | 1 | Full-size solderless breadboard | [Amazon.de (exact)](https://www.amazon.de/-/en/Breadboard-Solderless-Prototype-Distribution-Connection/dp/B01MCRZFE5/ref=sr_1_4?crid=2D9Y4A3H3L4R6&dib=eyJ2IjoiMSJ9.5Qn7bL8xkXnE7VvS5oVtKQ3xZQmKzQk8y2F7m9oG5d8H8bJ3a2bKxQk7l0JwP7wY.3k0R8Xy1bGg5cPp8y3jv0i2l5r6m7n8o9p0q1r2s3t4u5v6w7x8y9z0&dib_tag=se&keywords=breadboard&qid=1765730527&s=industrial&sprefix=breadboard%2Cindustrial%2C87&sr=1-4) |
+| Breadboard power module | 1 | MB102-style PSU module | [Amazon.de (exact)](https://www.amazon.de/Hailege-Supply-Prototype-Breadboard-6-5-12V/dp/B07XPTR9BP/ref=sr_1_1_sspa?crid=2D9Y4A3H3L4R6&dib=eyJ2IjoiMSJ9.5Qn7bL8xkXnE7VvS5oVtKQ3xZQmKzQk8y2F7m9oG5d8H8bJ3a2bKxQk7l0JwP7wY.3k0R8Xy1bGg5cPp8y3jv0i2l5r6m7n8o9p0q1r2s3t4u5v6w7x8y9z0&dib_tag=se&keywords=breadboard&qid=1765730527&s=industrial&sprefix=breadboard%2Cindustrial%2C87&sr=1-1-spons&aref=hqpxwahjo9&sp_csd=d2lkZ2V0TmFtZT1zcF9hdGY&psc=1) |
+| Battery shield / holder | 1 | 4×18650 “Battery shield” | [Amazon.de (exact)](http://amazon.de/-/en/diymore-Shield-V9-Expansion-Compatible/dp/B082MFWC7H/ref=sr_1_3?crid=1QEVFJ0VJ1WPH&dib=eyJ2IjoiMSJ9.bkZ3xkqH3Vq0q9z7mXyYFJd5B6Y2dJw9S0f5kWw3mVn1t3p3tQw2gXx1bK2pW1pQ.9X2W1Z0Y8X7W6V5U4T3S2R1Q0P9O8N7M6L5K4J3I2H1G0F9E8D7C6B5A4&dib_tag=se&keywords=18650+diymore&qid=1765730824&sprefix=18650+diymor%2Caps%2C112&sr=8-3) |
+| 18650 Li-ion cells | 4 | Only needed if building the battery-powered version | — |
 
-*Prices approximate, may vary by region and supplier*
+### Missing but (likely) required
+The electronics photo includes one small red module that is not labeled in the PDF.  
+In your old BOM this was described as a MOSFET driver, and you generally need one to switch the electromagnet safely from a GPIO.
 
----
-
-## Essential Components
-
-### Microcontroller & Audio
-
-| Item | Specification | Quantity | Est. Price | Source | Notes |
-|------|--------------|----------|-----------|---------|-------|
-| ESP32-A1S Audio Kit v2.2 | With ES8388 codec | 1 | $15-25 | AliExpress, Amazon | Must be v2.2 or compatible |
-| Micro USB Cable | Data capable | 1 | $3-5 | Anywhere | For programming |
-
-**ESP32-A1S Sources:**
-- AliExpress: Search "ESP32-A1S" or "ESP32 Audio Kit"
-- Amazon: "ESP32 Audio Development Board"
-- Local electronics suppliers
-
-**Important:** Verify it includes:
-- ES8388 audio codec
-- 6 onboard buttons
-- Micro USB port
-- Pin headers (or ability to solder them)
+| Item | Qty | Notes |
+|---|---:|---|
+| MOSFET trigger / low-side switch module | 1 | Use any 3.3V-logic compatible MOSFET driver board with flyback diode (or add diode yourself). |
 
 ---
 
-### Power System
+## 2) Fluids / “other”
 
-| Item | Specification | Quantity | Est. Price | Source | Notes |
-|------|--------------|----------|-----------|---------|-------|
-| 18650 Battery Holder | 4-cell with 5V USB-A output | 1 | $8-12 | AliExpress, Amazon | Must have built-in 5V regulation |
-| 18650 Li-ion Batteries | 2500-3500mAh, protected | 4 | $12-20 | Battery stores | Use quality cells only |
-| USB-A to Breadboard Cable | Standard or cut cable | 1 | $2-3 | Anywhere | Connects battery to power module |
-| Breadboard Power Module | Dual rail, 5V, with switch | 1 | $2-4 | AliExpress, Amazon | MB102 or similar |
-
-**Battery Recommendations:**
-- Samsung 25R (2500mAh, 20A)
-- LG HG2 (3000mAh, 20A)
-- Sony VTC6 (3000mAh, 15A)
-- Panasonic NCR18650B (3400mAh, 6.8A)
-
-⚠️ **Safety:** Always use protected cells from reputable brands. Avoid cheap unbranded batteries.
-
-**18650 Holder Requirements:**
-- Built-in boost converter to 5V
-- USB-A output port (5V)
-- Micro-USB charging port
-- Protection circuitry
-- Output current: 3A minimum, 5A recommended
-- Wake button to activate output
+| Item | Qty | Notes | Link |
+|---|---:|---|---|
+| Ferrofluid (in a bottle) | 1 | Ready-to-use option | [Amazon.de (exact)](https://www.amazon.de/-/en/YIZITU-Ferrofluid-Tabletop-Ventilation-Decoration/dp/B0FKH35D2K/ref=sr_1_9?crid=2KOO0IHJQ6PKT&dib=eyJ2IjoiMSJ9.6qOQ8M5nqZ0C2oP1zX8m6o8pVQpVt9c3d3s1G3b2qT5gXy.2v3w4x5y6z7a8b9c0d1e2f3g4h5i6j7k8l9m0n1o2p3q4r5s6t7u8v9w0&dib_tag=se&keywords=ferrofluid+bottle&qid=1765828065&sprefix=ferrofluid+bottl%2Caps%2C115&sr=8-9) |
+| Ferrofluid (separate / concentrate) | 1 | Alternative if mixing yourself | [Amazon.de (exact)](https://www.amazon.de/-/en/Ferrofluid-Liquid-Iron-Magnetic-10/dp/B004N5ENXS/ref=sr_1_4?crid=2KOO0IHJQ6PKT&dib=eyJ2IjoiMSJ9.6qOQ8M5nqZ0C2oP1zX8m6o8pVQpVt9c3d3s1G3b2qT5gXy.2v3w4x5y6z7a8b9c0d1e2f3g4h5i6j7k8l9m0n1o2p3q4r5s6t7u8v9w0&dib_tag=se&keywords=ferrofluid&qid=1765828040&sprefix=ferrofluid%2Caps%2C128&sr=8-4&th=1) |
+| Silicone oil | 1 | Used as listed in the manual | [Amazon.de (exact)](https://www.amazon.de/Products-Silicone-Odourless-Lubricating-Plastics/dp/B072MKHDF5/ref=sr_1_1_sspa?crid=2X8Q4T8Q7W3W4&dib=eyJ2IjoiMSJ9.2c0D2lVZJw9qkQfQj5Nq2mX0O5r5u3p0o5r7h0H3w8y8t.7V9W0X1Y2Z3A4B5C6D7E8F9G0H1I2J3K4L5M6N7O8P9Q0R1S2T3U4V5W6X7Y8Z9&dib_tag=se&keywords=silikon%C3%B6l&qid=1765828165&sprefix=silikon%C3%B6l%2Caps%2C111&sr=8-1-spons&aref=lGKYwL7n3z&sp_csd=d2lkZ2V0TmFtZT1zcF9hdGY&th=1) |
 
 ---
 
-### Electromagnet & Driver
+## 3) Hardware + wiring
 
-| Item | Specification | Quantity | Est. Price | Source | Notes |
-|------|--------------|----------|-----------|---------|-------|
-| MOSFET Trigger Module | AOD4184 or similar, 5V logic | 1 | $2-4 | AliExpress, Amazon | Must have flyback diode |
-| Electromagnet | 5V, 1-2A, solenoid type | 1 | $5-10 | AliExpress, Amazon | 20mm-30mm diameter recommended |
+### Screws (M3)
+- M3 × 6mm: **24x**  
+- M3 × 8mm: **4x**  
+- M3 × 12mm: **2x**  
+- M3 × 16mm: **2x**  
 
-**MOSFET Module Search Terms:**
-- "MOSFET trigger module"
-- "AOD4184 module"
-- "MOSFET switch module 5V"
-- "Low-side MOSFET driver"
-
-**Required Features:**
-- 3.3V/5V logic input
-- Built-in flyback diode
-- Status LED indicator
-- 5A+ current handling
-
-**Electromagnet Options:**
-
-| Type | Specs | Best For | Price |
-|------|-------|----------|-------|
-| Small | 5V/1A, 20mm | Desktop display | $5-7 |
-| Medium | 5V/1.5A, 25mm | Standard build | $7-10 |
-| Large | 5V/2A, 30mm | Maximum effect | $10-15 |
+### Cables / jumpers
+| Item | Qty | Notes | Link |
+|---|---:|---|---|
+| Dupont jumper wires | 1 set | Male–male, male–female, female–female | — |
+| Short mini jack cable | 1 | Female–male | [Amazon.de (exact)](https://www.amazon.de/Rierousy-Waterproof-Socket-Installation-Soldering/dp/B0CSSR1H7M/ref=sxin_15_pa_sp_search_thematic_sspa?content-id=amzn1.sym.f3b8e23d-99c4-4c88-a7e8-8a721e1fd78a%3Aamzn1.sym.f3b8e23d-99c4-4c88-a7e8-8a721e1fd78a&crid=3O45Z50QKPSV8&cv_ct_cx=mini%2Bjack%2Bextension&keywords=mini%2Bjack%2Bextension&pd_rd_i=B0CSSR1H7M&pd_rd_r=1f7a4d7f-7b4d-4f68-bd55-3b4c82b6f2c7&pd_rd_w=VZr7X&pd_rd_wg=mLkUFvcf5&pf_rd_p=f3b8e23d-99c4-4c88-a7e8-8a721e1fd78a&pf_rd_r=3E6W2Z9N7K0JH0P4H8Z3&qid=1765828240&s=industrial&sprefix=mini%2Bjack%2Bextension%2Cindustrial%2C92&sr=1-2-spons&sp_csd=d2lkZ2V0TmFtZT1zcF9zZWFyY2hfdGhlbWF0aWM&psc=1) |
+| Short mini jack cable | 1 | Male–male | — |
+| USB cable | 1 | USB-A ↔ USB-A (or splice/join two existing cables) | — |
+| Micro-USB cables | 2 | “to be cannibalized” (per manual) | — |
 
 ---
 
-### LED System
+## 4) Notes
 
-| Item | Specification | Quantity | Est. Price | Source | Notes |
-|------|--------------|----------|-----------|---------|-------|
-| WS2812B LED Ring | 24 LEDs, 5V | 1 | $5-10 | AliExpress, Amazon | 12 or 16 LED also works |
-| Jumper Wires | Female-Female, 10cm | 5-10 | $2-3 | Electronics store | For connections |
-
-**LED Ring Options:**
-
-| Size | LED Count | Diameter | Best For | Price |
-|------|-----------|----------|----------|-------|
-| Small | 12 LEDs | 37mm | Compact builds | $3-5 |
-| Medium | 16 LEDs | 44mm | Standard | $4-6 |
-| **Recommended** | **24 LEDs** | **66mm** | **Best effect** | **$6-10** |
-| Large | 32 LEDs | 82mm | Big displays | $8-12 |
-
-**LED Strip Alternative:**
-- WS2812B strip, 5V, 60 LEDs/m
-- Cut to desired length
-- More flexible mounting
-- $8-12 per meter
+- If you want to keep the BOM strictly “as in the manual”, don’t add resistors/caps/diodes here.
+- If you want a “recommended electronics” add-on list (LED data resistor + bulk cap + proper flyback diode + wire gauges), tell me and I’ll add a short section.
 
 ---
 
-### Electronic Components
-
-| Item | Specification | Quantity | Est. Price | Source | Notes |
-|------|--------------|----------|-----------|---------|-------|
-| Resistor | 330Ω, 1/4W | 1 | $0.10 | Electronics store | For LED data line |
-| Capacitor (optional) | 100-470µF, 16V+ | 2 | $0.50 | Electronics store | Power filtering |
-| Flyback Diode (optional) | SS34, 1N5819, or UF4007 | 1 | $0.20 | Electronics store | If not on MOSFET module |
-
-**Component Kit Option:**
-- Generic resistor/capacitor kit: $5-10
-- Includes all needed values plus extras
-
----
-
-### Wiring & Connectors
-
-| Item | Specification | Quantity | Est. Price | Source | Notes |
-|------|--------------|----------|-----------|---------|-------|
-| Hookup Wire | 22-24 AWG, stranded | 3m | $3-5 | Electronics store | Multiple colors |
-| Power Wire | 18-20 AWG, stranded | 1m | $2-3 | Electronics store | Red and black |
-| Dupont Connectors | Male/Female headers | 20 | $2-3 | AliExpress, Amazon | Crimping tool helpful |
-| Heat Shrink Tubing | Assorted sizes | 1 pack | $3-5 | Electronics store | For insulation |
-| Breadboard (optional) | 400 or 830 tie-points | 1 | $3-6 | Electronics store | For prototyping |
-
-**Wire Color Recommendations:**
-- Red: +5V power
-- Black: Ground (GND)
-- Yellow/White: Signal (GPIO 22, 23)
-- Other: Additional signals
-
----
-
-### Ferrofluid Display
-
-| Item | Specification | Quantity | Est. Price | Source | Notes |
-|------|--------------|----------|-----------|---------|-------|
-| Ferrofluid | 10-50ml | 1 | $10-30 | Amazon, specialty | Amount depends on display size |
-| Display Container | Clear, flat bottom | 1 | $5-15 | Varies | Glass vial, petri dish, custom |
-| Mineral Oil (optional) | Clear, cosmetic grade | 50ml | $5-10 | Pharmacy, cosmetic | Dilutes ferrofluid |
-
-**Ferrofluid Options:**
-
-| Type | Amount | Use Case | Price |
-|------|--------|----------|-------|
-| Educational | 10ml | Small display, testing | $10-15 |
-| **Standard** | **30ml** | **Recommended** | **$20-25** |
-| Large | 50ml+ | Big displays | $30-40 |
-
-**Container Ideas:**
-- Glass vial with flat bottom (chemistry supply)
-- Petri dish (biology supply)
-- Watch glass dish
-- Custom 3D printed holder
-- Small aquarium-style container
-
----
-
-## Optional Components
-
-### Enhancements
-
-| Item | Purpose | Est. Price | Priority |
-|------|---------|-----------|----------|
-| Heatsink | Cooling for electromagnet | $2-4 | Low |
-| Small Fan (5V) | Active cooling | $2-5 | Low |
-| 3.5mm Audio Jack | AUX input port | $1-2 | Medium |
-| Status LEDs | Power/status indicators | $1-2 | Low |
-| Enclosure Material | 3D printed or acrylic | $5-20 | High |
-
-### Development/Testing
-
-| Item | Purpose | Est. Price |
-|------|---------|-----------|
-| Multimeter | Testing voltage/continuity | $10-30 |
-| Bench Power Supply | Stable 5V for testing | $20-50 |
-| Soldering Iron | Permanent connections | $15-40 |
-| Wire Stripper | Clean wire prep | $5-15 |
-| Crimping Tool | Dupont connectors | $10-25 |
-
----
-
-## Tools Required
-
-### Essential
-
-- [ ] Screwdriver set (Phillips, flat)
-- [ ] Wire cutters
-- [ ] Wire strippers
-- [ ] Needle-nose pliers
-- [ ] Multimeter (for testing)
-
-### Helpful
-
-- [ ] Soldering iron & solder
-- [ ] Helping hands / PCB holder
-- [ ] Heat gun (for heat shrink)
-- [ ] Label maker
-- [ ] Crimping tool (for Dupont connectors)
-
----
-
-## Where to Buy
-
-### Online Retailers
-
-**International:**
-- **AliExpress** - Cheapest, slow shipping (2-4 weeks)
-- **Amazon** - Fast shipping, higher prices
-- **eBay** - Varies by seller
-- **Banggood** - Good electronics selection
-- **Adafruit** - Quality components, US-based
-- **SparkFun** - Great for learning, tutorials
-
-**Regional:**
-- **North America:** Digi-Key, Mouser, Adafruit, SparkFun
-- **Europe:** RS Components, Farnell, Conrad Electronic
-- **Asia:** Taobao, local electronics markets
-
-### Local Options
-
-- Electronics hobby stores
-- Radio Shack (where available)
-- University surplus stores
-- Maker spaces (often have parts bins)
-- Local electronics markets
-
----
-
-## Cost Breakdown by Category
-
-### Minimum Build (Basic Functionality)
-
-| Category | Cost |
-|----------|------|
-| ESP32-A1S | $20 |
-| 4x18650 + Holder | $15 |
-| MOSFET Module | $3 |
-| Electromagnet | $7 |
-| LED Ring (24) | $8 |
-| Resistors/Wire | $5 |
-| Breadboard Power | $3 |
-| USB Cable | $2 |
-| Ferrofluid + Container | $25 |
-| **Total** | **~$88** |
-
-### Recommended Build (Better Components)
-
-| Category | Cost |
-|----------|------|
-| ESP32-A1S | $25 |
-| Quality 18650s + Holder | $25 |
-| MOSFET Module | $4 |
-| Medium Electromagnet | $10 |
-| LED Ring (24) | $10 |
-| Components/Wire/Connectors | $10 |
-| Breadboard Power | $4 |
-| USB Cable | $3 |
-| Ferrofluid (30ml) | $25 |
-| Container | $10 |
-| **Total** | **~$126** |
-
-### Deluxe Build (All Options)
-
-| Category | Cost |
-|----------|------|
-| ESP32-A1S | $25 |
-| High-capacity 18650s + Holder | $30 |
-| MOSFET Module | $4 |
-| Large Electromagnet | $15 |
-| LED Ring (32) | $12 |
-| Premium Components | $15 |
-| Heatsink + Fan | $7 |
-| 3D Printed Enclosure | $15 |
-| Quality Ferrofluid (50ml) | $35 |
-| Custom Container | $15 |
-| **Total** | **~$173** |
-
----
-
-## Battery Charger
-
-**Not included in main BOM but essential:**
-
-| Item | Type | Price | Notes |
-|------|------|-------|-------|
-| Smart Charger | 4-bay, Li-ion | $15-30 | Nitecore, XTAR, etc. |
-| USB Charger | 18650 compatible | $8-15 | Convenient but slower |
-
-**Note:** Most 4x18650 holders have built-in Micro-USB charging, so external charger is optional but recommended for longevity.
-
-**Recommended Features:**
-- Individual cell monitoring
-- Multiple charge rates (0.5A, 1A, 2A)
-- Status display
-- Auto-shutoff when full
-- Compatible with protected cells
-
-**Charger Brands:**
-- Nitecore (high quality, reliable)
-- XTAR (good value)
-- Opus (feature-rich)
-- LiitoKala (budget option)
-
----
-
-## Bulk Discounts
-
-If building multiple units or group buy:
-
-| Item | Single | 5-Pack | 10-Pack | Savings |
-|------|--------|--------|---------|---------|
-| ESP32-A1S | $20 | $90 | $160 | 20% |
-| LED Rings | $8 | $35 | $65 | 19% |
-| MOSFET Modules | $3 | $12 | $20 | 33% |
-| Electromagnets | $8 | $35 | $60 | 25% |
-
----
-
-## Shopping List Template
-
-Copy this checklist when ordering:
-
-```
-[ ] ESP32-A1S Audio Kit v2.2
-[ ] 4x 18650 batteries (protected)
-[ ] 4x18650 holder with USB-A output & Micro-USB charging
-[ ] USB-A cable (for battery to breadboard)
-[ ] Breadboard power module (with master switch)
-[ ] MOSFET trigger module (with diode)
-[ ] Electromagnet (5V, 1-2A)
-[ ] WS2812B LED ring (24 LEDs)
-[ ] 330Ω resistor (1x)
-[ ] Hookup wire (22-24 AWG, 3m)
-[ ] Power wire (18-20 AWG, 1m)
-[ ] Dupont connectors (20+)
-[ ] Heat shrink tubing
-[ ] Ferrofluid (30ml)
-[ ] Display container
-[ ] Micro USB cable (for programming)
-
-Optional:
-[ ] Capacitors (100µF, 470µF)
-[ ] 3.5mm audio jack
-[ ] Heatsink for coil
-[ ] 5V fan
-[ ] Enclosure material
-```
-
----
-
-## Substitutions & Alternatives
-
-### ESP32 Board
-- ❌ ESP32 DevKit (lacks audio codec)
-- ✅ ESP32-A1S v2.2 (recommended)
-- ⚠️ Other ESP32-Audio-Kit versions (may need code changes)
-
-### Batteries
-- ✅ 18650 protected cells (recommended)
-- ⚠️ 18650 unprotected (only if you know what you're doing)
-- ⚠️ Power bank with 5V output (possible but less portable)
-- ❌ AA batteries (insufficient current)
-
-### MOSFET Module
-- ✅ AOD4184 module (recommended)
-- ✅ IRF520 module (if has flyback diode)
-- ⚠️ Standalone MOSFET (need to add diode yourself)
-- ❌ Relay module (too slow, will click)
-
-### LEDs
-- ✅ WS2812B (recommended, most common)
-- ✅ SK6812 (compatible, RGBW option)
-- ⚠️ APA102 (faster but needs 2 pins)
-- ❌ Standard RGB LEDs (not addressable)
-
----
-
-## Quality Tips
-
-### Don't Cheap Out On:
-1. **Batteries** - Safety critical, affects performance
-2. **ESP32-A1S** - Clones may have issues
-3. **Battery holder** - Need reliable 5V output
-
-### OK to Economize:
-1. Resistors - Generic is fine
-2. Wire - Any copper stranded wire works
-3. Connectors - Function over brand
-
-### Avoid:
-1. Unbranded lithium batteries
-2. "Free shipping from unknown country" listings
-3. Prices way below market average
-4. Listings with stock photos only
-
----
-
-## Inventory Checklist
-
-Before starting assembly, verify you have:
-
-**Electronics:**
-- [ ] ESP32-A1S board with pin headers
-- [ ] MOSFET module tested (LED lights up)
-- [ ] LED ring responds to power (lights up)
-- [ ] Electromagnet tested (gets warm when powered)
-
-**Power:**
-- [ ] Batteries charged to 4.0V+ each
-- [ ] Battery holder outputs 5V at USB-A port
-- [ ] Power module outputs 5V on both rails
-- [ ] Breadboard master switch works
-
-**Components:**
-- [ ] 330Ω resistor measured (correct value)
-- [ ] Wire properly stripped
-- [ ] Connectors crimped or soldered
-- [ ] Heat shrink available
-
-**Tools:**
-- [ ] Multimeter available
-- [ ] Computer with Arduino IDE installed
-- [ ] USB cable connects to ESP32
-- [ ] Work surface cleared
-
----
-
-## Version History
-
-- **v2.0** - Updated for battery-powered design with 4x18650
-- **v1.0** - Original USB-C PD version
-
----
-
-## Need Help?
-
-**Can't find a part?**
-- Ask in GitHub Discussions
-- Check MakerWorld project page
-- Post in Issues with your location
-
-**Part recommendations needed?**
-- Specify your country/region
-- Mention budget constraints
-- List what you've already found
-
----
-
-**Project**: [FerroWave](https://github.com/matoslav/FerroWave)  
-**Author**: Makarov87  
-**Crowdfunded by**: [MakerWorld Community](https://makerworld.com/en/crowdfunding/70-ferrowave)  
+**Project**: https://github.com/matoslav/FerroWave  
 **License**: MIT
-
-*Thank you to all MakerWorld backers who made this project possible!* 🙏
