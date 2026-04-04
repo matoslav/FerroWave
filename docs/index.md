@@ -18,29 +18,29 @@ Welcome to the FerroWave documentation! This index will help you find the inform
 
 ---
 
-## 📚 Documentation
+## ð Documentation
 
 ### Getting Started
 
 Start here if you're new to FerroWave:
 
 1. **[README.md](../README.md)** - Project overview, features, and quick start
-2. **[BOM.md](BOM.md)** - Complete bill of materials and shopping guide
-3. **[LIBRARIES.md](LIBRARIES.md)** - Required Arduino libraries installation
-4. **[WIRING.md](WIRING.md)** - Step-by-step wiring instructions
+2. **[BOM.md](../BOM.md)** - Complete bill of materials and shopping guide
+3. **[LIBRARIES.md](../libraries.md)** - Required Arduino libraries installation
+4. **[WIRING.md](../wiring.md)** - Step-by-step wiring instructions
 
 ### Building & Programming
 
 Follow these guides to build and program your FerroWave:
 
-- **[WIRING.md](WIRING.md)** - Complete wiring guide with diagrams
+- **[WIRING.md](../wiring.md)** - Complete wiring guide with diagrams
   - Power system setup (4x18650 battery)
   - ESP32-A1S connections
   - Electromagnet circuit
   - LED ring wiring
   - Step-by-step assembly
 
-- **[LIBRARIES.md](LIBRARIES.md)** - Library installation
+- **[LIBRARIES.md](../libraries.md)** - Library installation
   - Arduino IDE setup
   - ESP32 board support
   - Required libraries (AudioTools, ESP32-A2DP, NeoPixel)
@@ -67,7 +67,7 @@ Learn how to operate and customize:
 
 Having issues? Check here:
 
-- **[TROUBLESHOOTING.md](TROUBLESHOOTING.md)** - Comprehensive troubleshooting
+- **[TROUBLESHOOTING.md](../troubleshooting.md)** - Comprehensive troubleshooting
   - Power issues
   - Compilation errors
   - Upload problems
@@ -94,7 +94,7 @@ Want to contribute to FerroWave?
 
 ---
 
-## 📖 Document Overview
+## ð Document Overview
 
 ### Main Documents (Root Level)
 
@@ -110,29 +110,29 @@ Want to contribute to FerroWave?
 
 | Document | Description | Audience |
 |----------|-------------|----------|
-| [BOM.md](BOM.md) | Bill of materials | Builders |
-| [LIBRARIES.md](LIBRARIES.md) | Library installation | Builders |
-| [WIRING.md](WIRING.md) | Wiring instructions | Builders |
-| [TROUBLESHOOTING.md](TROUBLESHOOTING.md) | Problem solving | Users |
-| [index.md](index.md) | This document | Everyone |
+| [BOM.md](../BOM.md) | Bill of materials | Builders |
+| [LIBRARIES.md](../libraries.md) | Library installation | Builders |
+| [WIRING.md](../wiring.md) | Wiring instructions | Builders |
+| [TROUBLESHOOTING.md](../troubleshooting.md) | Problem solving | Users |
+| [index.md](../docs/index.md) | This document | Everyone |
 
 ---
 
-## 🚀 Quick Start Guide
+## ð Quick Start Guide
 
 ### For First-Time Builders
 
 1. Read [README.md](../README.md) for project overview
-2. Check [BOM.md](BOM.md) and order parts
-3. Install libraries following [LIBRARIES.md](LIBRARIES.md)
-4. Wire components using [WIRING.md](WIRING.md)
+2. Check [BOM.md](../BOM.md) and order parts
+3. Install libraries following [LIBRARIES.md](../libraries.md)
+4. Wire components using [WIRING.md](../wiring.md)
 5. Upload firmware from `/firmware` folder
 6. Learn commands from [commands.md](../commands.md)
 
 ### For Existing Users
 
 1. Check [commands.md](../commands.md) for serial commands
-2. Use [TROUBLESHOOTING.md](TROUBLESHOOTING.md) if issues arise
+2. Use [TROUBLESHOOTING.md](../troubleshooting.md) if issues arise
 3. See [CHANGELOG.md](../CHANGELOG.md) for updates
 
 ### For Contributors
@@ -143,7 +143,7 @@ Want to contribute to FerroWave?
 
 ---
 
-## 🎯 Features by Document
+## ð¯ Features by Document
 
 ### Hardware Information
 - **BOM.md** - What to buy
@@ -163,19 +163,19 @@ Want to contribute to FerroWave?
 
 ---
 
-## 🔧 By Skill Level
+## ð§ By Skill Level
 
 ### Beginner
 Start with these documents:
 1. [README.md](../README.md)
-2. [BOM.md](BOM.md)
-3. [LIBRARIES.md](LIBRARIES.md)
-4. [WIRING.md](WIRING.md)
+2. [BOM.md](../BOM.md)
+3. [LIBRARIES.md](../libraries.md)
+4. [WIRING.md](../wiring.md)
 
 ### Intermediate
 You might need:
 - [commands.md](../commands.md) - For advanced tuning
-- [TROUBLESHOOTING.md](TROUBLESHOOTING.md) - When issues arise
+- [TROUBLESHOOTING.md](../troubleshooting.md) - When issues arise
 
 ### Advanced
 Dive deeper:
@@ -185,12 +185,12 @@ Dive deeper:
 
 ---
 
-## 🎨 By Task
+## ð¨ By Task
 
 ### I want to build FerroWave
-1. [BOM.md](BOM.md) - Shopping list
-2. [LIBRARIES.md](LIBRARIES.md) - Software setup
-3. [WIRING.md](WIRING.md) - Assembly guide
+1. [BOM.md](../BOM.md) - Shopping list
+2. [LIBRARIES.md](../libraries.md) - Software setup
+3. [WIRING.md](../wiring.md) - Assembly guide
 
 ### I want to use FerroWave
 1. [README.md](../README.md) - Basic operation
@@ -203,35 +203,35 @@ Dive deeper:
 3. Source code in `/firmware`
 
 ### I'm having problems
-1. [TROUBLESHOOTING.md](TROUBLESHOOTING.md) - Problem solving
+1. [TROUBLESHOOTING.md](../troubleshooting.md) - Problem solving
 2. Check [GitHub Issues](https://github.com/matoslav/FerroWave/issues)
 3. Ask in [Discussions](https://github.com/matoslav/FerroWave/discussions)
 
 ---
 
-## 📦 Repository Structure
+## ð¦ Repository Structure
 
 ```
 FerroWave/
-├── README.md                 # Main documentation
-├── LICENSE                   # MIT License
-├── CHANGELOG.md             # Version history
-├── CONTRIBUTING.md          # Contribution guide
-├── commands.md              # Serial commands
-├── docs/                    # Documentation folder
-│   ├── index.md            # This file
-│   ├── BOM.md              # Bill of materials
-│   ├── LIBRARIES.md        # Library installation
-│   ├── WIRING.md           # Wiring guide
-│   └── TROUBLESHOOTING.md  # Troubleshooting
-├── firmware/               # Arduino firmware
-│   └── FerroWave.ino      # Main sketch
-└── hardware/              # (Planned) Schematics
+âââ README.md                 # Main documentation
+âââ LICENSE                   # MIT License
+âââ CHANGELOG.md             # Version history
+âââ CONTRIBUTING.md          # Contribution guide
+âââ commands.md              # Serial commands
+âââ docs/                    # Documentation folder
+â   âââ index.md            # This file
+â   âââ BOM.md              # Bill of materials
+â   âââ LIBRARIES.md        # Library installation
+â   âââ WIRING.md           # Wiring guide
+â   âââ TROUBLESHOOTING.md  # Troubleshooting
+âââ firmware/               # Arduino firmware
+â   âââ FerroWave.ino      # Main sketch
+âââ hardware/              # (Planned) Schematics
 ```
 
 ---
 
-## 💡 Tips for Using This Documentation
+## ð¡ Tips for Using This Documentation
 
 ### Search Tips
 - Use Ctrl+F (or Cmd+F) to search within documents
@@ -245,14 +245,14 @@ FerroWave/
 
 ### Getting Help
 1. Search existing documentation first
-2. Check [TROUBLESHOOTING.md](TROUBLESHOOTING.md)
+2. Check [TROUBLESHOOTING.md](../troubleshooting.md)
 3. Search [GitHub Issues](https://github.com/matoslav/FerroWave/issues)
 4. Ask in [GitHub Discussions](https://github.com/matoslav/FerroWave/discussions)
 5. Create new issue if needed
 
 ---
 
-## 🌟 Special Thanks
+## ð Special Thanks
 
 **This project was made possible by the MakerWorld community through crowdfunding.**
 
@@ -266,7 +266,7 @@ Thank you to:
 
 ---
 
-## 📝 Documentation Updates
+## ð Documentation Updates
 
 This documentation is maintained alongside the FerroWave project. If you find errors or have suggestions:
 
@@ -278,7 +278,7 @@ See [CONTRIBUTING.md](../CONTRIBUTING.md) for guidelines.
 
 ---
 
-## 🔗 External Resources
+## ð External Resources
 
 ### Hardware
 - [ESP32-A1S Documentation](https://docs.ai-thinker.com/)
