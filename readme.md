@@ -25,7 +25,7 @@ FerroWave was successfully crowdfunded on MakerWorld, and it would not exist wit
 - Every contributor who helped bring this vision to life
 - The open-source community for incredible libraries and tools
 
-**Your support made this dream a reality. Thank you!** 🙏
+**Your support made this dream a reality. Thank you!** ð
 
 ---
 
@@ -55,9 +55,9 @@ This repo reflects the **latest "AUX + Button Control Edition"** firmware with t
   + 3.3 V logic input, 5V coil output
   + Much more maker-friendly than raw MOSFET wiring
 * Finalized **pinout** to avoid conflicts with ES8388 codec and onboard buttons:
-  + GPIO 22 → **MOSFET gate** (coil PWM)
-  + GPIO 23 → **WS2812B LED DIN**
-  + ES8388 on standard I²S pins (27 / 25 / 26 / 35 / 0)
+  + GPIO 22 â **MOSFET gate** (coil PWM)
+  + GPIO 23 â **WS2812B LED DIN**
+  + ES8388 on standard IÂ²S pins (27 / 25 / 26 / 35 / 0)
 
 ---
 
@@ -103,7 +103,7 @@ This repo reflects the **latest "AUX + Button Control Edition"** firmware with t
   + Live parameter adjustment
   + Test pulses and diagnostics
   + Status readouts
-* Designed to be **stable on ESP32 core 2.0.14+**
+* Designed to be **stable on ESP32 core 2.0.14**
 
 ---
 
@@ -119,7 +119,7 @@ This repo reflects the **latest "AUX + Button Control Edition"** firmware with t
 * **Breadboard Power Module**
 * **Ferrofluid display container**
 
-See [docs/BOM.md](docs/BOM.md) for complete bill of materials.
+See [BOM.md](BOM.md) for complete bill of materials.
 
 ---
 
@@ -146,15 +146,15 @@ See [docs/BOM.md](docs/BOM.md) for complete bill of materials.
   Breadboard Power Module
     (+ and - rails)
          |
-         ├──> ESP32-A1S (5V + GND)
-         ├──> LED Ring (5V + GND)
-         └──> Electromagnet + (5V)
+         âââ> ESP32-A1S (5V + GND)
+         âââ> LED Ring (5V + GND)
+         âââ> Electromagnet + (5V)
 
-LED Ring DIN ──> GPIO 23 (through 330Ω resistor)
-ESP32 GPIO 22 ──> MOSFET Gate
+LED Ring DIN ââ> GPIO 23 (through 330Î© resistor)
+ESP32 GPIO 22 ââ> MOSFET Gate
 ```
 
-See [docs/WIRING.md](docs/WIRING.md) for complete instructions.
+See [wiring.md](wiring.md) for complete instructions.
 
 ---
 
@@ -170,22 +170,22 @@ See [docs/WIRING.md](docs/WIRING.md) for complete instructions.
 ## Pinout
 
 **Control:**
-* GPIO 22 → MOSFET gate (PWM)
-* GPIO 23 → LED ring DIN
+* GPIO 22 â MOSFET gate (PWM)
+* GPIO 23 â LED ring DIN
 
 **Buttons:**
 * GPIO 36, 39, 34, 35, 32, 33 (built-in)
 
-**I²S Audio:**
-* GPIO 27 → BCK
-* GPIO 25 → WS
-* GPIO 26 → DATA_OUT
+**IÂ²S Audio:**
+* GPIO 27 â BCK
+* GPIO 25 â WS
+* GPIO 26 â DATA_OUT
 
 ---
 
 ## Firmware Setup (Arduino IDE)
 
-1. Install **ESP32 board support** (v2.0.14+)
+1. Install **ESP32 board support** (v2.0.14 — use this exact version, not the latest)
 2. Select **"ESP32 Dev Module"**
 3. Install required libraries (see below)
 4. Upload firmware
@@ -201,7 +201,7 @@ Install via Arduino Library Manager:
 2. **ESP32-A2DP** by pschatzmann
 3. **Adafruit NeoPixel** by Adafruit
 
-See [docs/LIBRARIES.md](docs/LIBRARIES.md) for detailed installation.
+See [libraries.md](libraries.md) for detailed installation.
 
 ---
 
@@ -273,7 +273,7 @@ See [commands.md](commands.md) for complete reference.
 **Coil not working?** Test with `t` command  
 **LEDs dark?** Try `l255` and check GPIO 23
 
-See [docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md) for complete guide.
+See [troubleshooting.md](troubleshooting.md) for complete guide.
 
 ---
 
@@ -328,6 +328,6 @@ When using or modifying FerroWave:
 
 **Created by Makarov87**  
 **Crowdfunded by the MakerWorld Community**  
-**Built with ❤️ and ferrofluid**
+**Built with â¤ï¸ and ferrofluid**
 
-Thank you to all MakerWorld backers! 🙏
+Thank you to all MakerWorld backers! ð
