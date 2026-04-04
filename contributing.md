@@ -12,7 +12,7 @@ Thank you for your interest in contributing to FerroWave! This project was made 
 - **GitHub Repository**: https://github.com/matoslav/FerroWave
 - **License**: MIT License (see LICENSE file)
 
-**This project would not exist without the support of MakerWorld backers. Thank you!** 🙏
+**This project would not exist without the support of MakerWorld backers. Thank you!** ð
 
 ---
 
@@ -20,34 +20,34 @@ Thank you for your interest in contributing to FerroWave! This project was made 
 
 We welcome contributions in many forms:
 
-### 💻 Code Contributions
+### ð» Code Contributions
 - Bug fixes
 - New magnet behavior modes
 - Additional LED effects
 - Performance optimizations
 - New features (AUX improvements, MIDI support, etc.)
 
-### 📚 Documentation
+### ð Documentation
 - Improve existing documentation
 - Add tutorials and guides
 - Translate documentation
 - Create video tutorials
 - Share build photos and tips
 
-### 🔧 Hardware
+### ð§ Hardware
 - Test on different ESP32 boards
 - Design 3D printed enclosures
 - Create PCB layouts
 - Improve power management solutions
 - Document hardware modifications
 
-### 🎨 Creative
+### ð¨ Creative
 - Share your ferrofluid display designs
 - Create demo videos
 - Design artwork or graphics
 - Suggest new visual effects
 
-### 🐛 Bug Reports
+### ð Bug Reports
 - Report issues you encounter
 - Provide detailed reproduction steps
 - Share Serial Monitor logs
@@ -63,7 +63,7 @@ Before contributing code, make sure you have:
 
 1. **Arduino IDE** (1.8.x or 2.x)
 2. **ESP32 board support** (version 2.0.14+)
-3. **Required libraries** (see [LIBRARIES.md](docs/LIBRARIES.md))
+3. **Required libraries** (see [LIBRARIES.md](libraries.md))
 4. **ESP32-A1S Audio Kit** (recommended for testing)
 5. Basic understanding of C++ and Arduino
 
@@ -256,21 +256,21 @@ if (pwmFreqHz < 10.0f) {
 ### Performance Considerations
 
 ```cpp
-// ✅ Good: Non-blocking
+// â Good: Non-blocking
 unsigned long lastUpdate = 0;
 if (millis() - lastUpdate > 100) {
   updateLEDs();
   lastUpdate = millis();
 }
 
-// ❌ Bad: Blocking (causes audio stutter)
+// â Bad: Blocking (causes audio stutter)
 updateLEDs();
 delay(100);
 
-// ✅ Good: Efficient
+// â Good: Efficient
 float value = envFast * sensitivity;
 
-// ❌ Bad: Unnecessary division in loop
+// â Bad: Unnecessary division in loop
 for (int i = 0; i < 100; i++) {
   float value = envFast * (sensitivity / 100.0f);
 }
@@ -385,7 +385,7 @@ See [LICENSE](LICENSE) file for full details.
 
 Thank you for contributing to FerroWave! Your help makes this project better for everyone.
 
-**Special thanks to the MakerWorld community who made this project possible through crowdfunding!** 🎉
+**Special thanks to the MakerWorld community who made this project possible through crowdfunding!** ð
 
 ---
 
