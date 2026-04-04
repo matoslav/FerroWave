@@ -166,7 +166,7 @@ fatal error: Adafruit_NeoPixel.h: No such file or directory
 
 1. **Install Missing Libraries**
    ```
-   Arduino IDE → Sketch → Include Library → Manage Libraries
+   Arduino IDE â Sketch â Include Library â Manage Libraries
    
    Search and install:
    - "AudioTools" by pschatzmann
@@ -189,17 +189,17 @@ Error: Board esp32:esp32:esp32 not found
 
 1. **Install ESP32 Board Support**
    ```
-   File → Preferences → Additional Board URLs:
+   File â Preferences â Additional Board URLs:
    https://espressif.github.io/arduino-esp32/package_esp32_index.json
    
-   Tools → Board → Boards Manager
+   Tools â Board â Boards Manager
    Search: "ESP32"
    Install: "esp32 by Espressif Systems"
    ```
 
 2. **Select Correct Board**
    ```
-   Tools → Board → ESP32 Arduino → ESP32 Dev Module
+   Tools â Board â ESP32 Arduino â ESP32 Dev Module
    ```
 
 ---
@@ -243,8 +243,8 @@ A fatal error occurred: Timed out waiting for packet header
 
 2. **Check Upload Settings**
    ```
-   Tools → Upload Speed → Try "115200"
-   Tools → Flash Frequency → "80MHz"
+   Tools â Upload Speed â Try "115200"
+   Tools â Flash Frequency â "80MHz"
    ```
 
 ---
@@ -359,17 +359,17 @@ A fatal error occurred: Timed out waiting for packet header
 
 3. **Verify Coil**
    ```
-   - Measure coil resistance (should be 2-10Ω typically)
+   - Measure coil resistance (should be 2-10Î© typically)
    - Check coil connections
    - Test coil directly with 5V (briefly!)
    ```
 
 4. **Check Wiring**
    ```
-   Coil (+) → Breadboard (+) rail (5V)
-   Coil (-) → MOSFET DRAIN
-   MOSFET SOURCE → Breadboard (-) rail (GND)
-   GPIO 22 → MOSFET GATE (direct connection)
+   Coil (+) â Breadboard (+) rail (5V)
+   Coil (-) â MOSFET DRAIN
+   MOSFET SOURCE â Breadboard (-) rail (GND)
+   GPIO 22 â MOSFET GATE (direct connection)
    ```
 
 ---
@@ -482,7 +482,7 @@ A fatal error occurred: Timed out waiting for packet header
 
 2. **Check Data Connection**
    ```
-   - GPIO 23 → 330Ω resistor → LED DIN
+   - GPIO 23 â 330Î© resistor â LED DIN
    - Verify resistor is present
    - Check for broken wire
    ```
@@ -522,7 +522,7 @@ A fatal error occurred: Timed out waiting for packet header
 
 2. **Data Line Issues**
    ```
-   - Check 330Ω resistor is present
+   - Check 330Î© resistor is present
    - Keep data wire short (< 12 inches)
    - Route away from power wires
    ```
@@ -642,8 +642,8 @@ A fatal error occurred: Timed out waiting for packet header
 ### Get Help
 
 1. **Check Documentation**
-   - Read [README.md](README.md)
-   - Review [WIRING.md](docs/WIRING.md)
+   - Read [README.md](readme.md)
+   - Review [WIRING.md](wiring.md)
    - Check [commands.md](commands.md)
 
 2. **GitHub Issues**
