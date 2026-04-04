@@ -6,7 +6,7 @@
 - **5V Electromagnet** (controlled via MOSFET)
 - **WS2812B LED Ring** (24 LEDs)
 - **MOSFET** (e.g., IRLZ44N or similar logic-level N-channel)
-- **330Ω Resistor** (for LED data line)
+- **330Î© Resistor** (for LED data line)
 - **Ferrofluid** in display container
 - Power supply (5V for LEDs and magnet)
 
@@ -19,14 +19,14 @@ Install ESP32 board support in Arduino IDE:
 
 **Via Board Manager:**
 1. Open Arduino IDE
-2. Go to `File` → `Preferences`
+2. Go to `File` â `Preferences`
 3. Add to "Additional Board URLs":
    ```
    https://espressif.github.io/arduino-esp32/package_esp32_index.json
    ```
-4. Go to `Tools` → `Board` → `Boards Manager`
+4. Go to `Tools` â `Board` â `Boards Manager`
 5. Search for "ESP32" and install **"esp32" by Espressif Systems**
-6. Select Board: `Tools` → `Board` → `ESP32 Arduino` → `ESP32 Dev Module`
+6. Select Board: `Tools` â `Board` â `ESP32 Arduino` â `ESP32 Dev Module`
 
 ---
 
@@ -36,7 +36,7 @@ Install ESP32 board support in Arduino IDE:
 **Primary audio processing library**
 
 **Installation:**
-- Arduino IDE: `Sketch` → `Include Library` → `Manage Libraries`
+- Arduino IDE: `Sketch` â `Include Library` â `Manage Libraries`
 - Search: "AudioTools"
 - Install: **"AudioTools" by pschatzmann**
 - Version: Latest (tested with v0.9.x)
@@ -55,7 +55,7 @@ Install ESP32 board support in Arduino IDE:
 **Bluetooth A2DP audio sink**
 
 **Installation:**
-- Arduino IDE: `Sketch` → `Include Library` → `Manage Libraries`
+- Arduino IDE: `Sketch` â `Include Library` â `Manage Libraries`
 - Search: "ESP32-A2DP"
 - Install: **"ESP32-A2DP" by pschatzmann**
 - Version: Latest (tested with v1.7.x)
@@ -73,7 +73,7 @@ Install ESP32 board support in Arduino IDE:
 **WS2812B LED control**
 
 **Installation:**
-- Arduino IDE: `Sketch` → `Include Library` → `Manage Libraries`
+- Arduino IDE: `Sketch` â `Include Library` â `Manage Libraries`
 - Search: "Adafruit NeoPixel"
 - Install: **"Adafruit NeoPixel" by Adafruit**
 - Version: Latest (tested with v1.11.x)
@@ -91,7 +91,7 @@ Install ESP32 board support in Arduino IDE:
 
 ### Option 1: Arduino Library Manager (Recommended)
 ```
-1. Sketch → Include Library → Manage Libraries
+1. Sketch â Include Library â Manage Libraries
 2. Search and install each:
    - "AudioTools" by pschatzmann
    - "ESP32-A2DP" by pschatzmann
@@ -123,23 +123,23 @@ Then restart Arduino IDE.
 ### ESP32-A1S Connections
 
 **Electromagnet (via MOSFET):**
-- MOSFET Gate → GPIO 22
-- MOSFET Drain → Electromagnet (-)
-- MOSFET Source → GND
-- Electromagnet (+) → 5V Power Supply
+- MOSFET Gate â GPIO 22
+- MOSFET Drain â Electromagnet (-)
+- MOSFET Source â GND
+- Electromagnet (+) â 5V Power Supply
 
 **LED Ring (WS2812B):**
-- LED DIN → GPIO 23 (through 330Ω resistor)
-- LED VCC → 5V
-- LED GND → GND
+- LED DIN â GPIO 23 (through 330Î© resistor)
+- LED VCC â 5V
+- LED GND â GND
 
 **Onboard Buttons (ESP32-A1S):**
-- Button 1: GPIO 36 (Magnet Mode ↑)
-- Button 2: GPIO 39 (Magnet Mode ↓)
-- Button 3: GPIO 34 (LED Mode ↑)
-- Button 4: GPIO 35 (LED Mode ↓)
-- Button 5: GPIO 32 (EQ Preset ↑)
-- Button 6: GPIO 33 (EQ Preset ↓)
+- Button 1: GPIO 36 (Magnet Mode â)
+- Button 2: GPIO 39 (Magnet Mode â)
+- Button 3: GPIO 34 (LED Mode â)
+- Button 4: GPIO 35 (LED Mode â)
+- Button 5: GPIO 32 (EQ Preset â)
+- Button 6: GPIO 33 (EQ Preset â)
 
 **I2S Audio (Pre-wired on ESP32-A1S):**
 - BCK: GPIO 27
@@ -225,7 +225,7 @@ PSRAM: "Disabled"
 ### LEDs Not Working
 - Verify LED power (5V, GND)
 - Check data pin (GPIO 23) connection
-- Ensure 330Ω resistor is in place
+- Ensure 330Î© resistor is in place
 - Try reducing LED brightness: `l50` in serial
 
 ### Electromagnet Not Responding
