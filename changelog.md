@@ -1,333 +1,160 @@
-# FerroWave
+# Changelog
 
-Audio-reactive **ferrofluid visualizer** built on **ESP32-A1S (ES8388)**.  
-Streams Bluetooth audio (A2DP) or AUX input into the on-board codec, extracts live envelopes, and drives:
+All notable changes to FerroWave will be documented in this file.
 
-* a **coil + MOSFET trigger module** (PWM on GPIO 22) for ferrofluid motion
-* a **WS2812B LED ring** (GPIO 21) for synced visuals
-* **Six onboard buttons** for live preset control (no computer needed!)
-
-> Created by **Makarov87** and **crowdfunded by the MakerWorld community**.  
-
-**Crowdfunding Campaign:** https://makerworld.com/en/crowdfunding/70-ferrowave
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
-## Acknowledgments
+## [2.0.0] - 2024-12-14
 
-**This project was made possible by the MakerWorld community!**
+### Added
+- **AUX Input Support**: Auto-detection and manual switching for 3.5mm line input
+- **Physical Button Controls**: Six onboard buttons for standalone operation
+  - Buttons 1/2: Cycle magnet modes up/down
+  - Buttons 3/4: Cycle LED modes up/down
+  - Buttons 5/6: Cycle EQ presets up/down
+- **8 EQ Presets**: Optimized audio profiles (Flat, Bass Boost, Treble, Vocal, Rock, Electronic, Jazz, Classical)
+- **Battery Power System**: 4x18650 battery pack with 5V output
+- **Breadboard Power Module**: Clean power distribution for all components
+- Non-blocking button debouncing (200ms)
+- Manual audio source switching via serial commands (`aux`, `bt`)
+- Volume control via serial (`v<num>`)
 
-FerroWave was successfully crowdfunded on MakerWorld, and it would not exist without the support, belief, and contributions of backers and makers from around the world.
+### Changed
+- **Power System**: Replaced USB-C PD trigger with 4x18650 battery system
+  - Simpler wiring (single 5V rail)
+  - Truly portable and cordless
+  - 1-1.5 hours typical runtime
+- **Performance**: Eliminated all blocking `delay()` calls
+  - Fixed audio stuttering issues
+  - Smooth 60fps LED updates
+  - Responsive button handling
+- **Startup**: Reduced LED animation delay from 720ms to 200ms
+- **AUX Check Interval**: Increased from 500ms to 2000ms for efficiency
+- Updated documentation for battery-powered design
 
-**Special thanks to:**
-- All MakerWorld backers who supported this campaign
-- The MakerWorld platform for enabling maker-driven innovation
-- Every contributor who helped bring this vision to life
-- The open-source community for incredible libraries and tools
+### Fixed
+- Audio stuttering caused by blocking delays in button handling
+- LED blink on startup (reduced animation time)
+- Naming conflict with AudioTools library (renamed enum to `InputSource`)
+- Performance degradation from frequent AUX detection checks
 
-**Your support made this dream a reality. Thank you!** ð
-
----
-
-## Project Status (AUX + Button Control Edition)
-
-This repo reflects the **latest "AUX + Button Control Edition"** firmware with the finalized hardware layout.
-
-**What's new in this version:**
-
-* **AUX Input Support**: Auto-detects when 3.5mm cable is plugged in and switches from Bluetooth
-* **Physical Button Controls**: Six onboard buttons for live control without serial/computer
-  + Cycle through magnet modes (8 presets)
-  + Cycle through LED effects (10 modes)
-  + Switch between EQ presets (8 audio profiles)
-* **Dual Input**: Seamlessly switch between Bluetooth and AUX input
-* **Non-blocking performance**: Fixed audio stuttering issues for smooth playback
-
-**Previous improvements:**
-
-* Switched to **4x18650 battery pack** with breadboard power distribution:
-  + Portable, cordless operation
-  + Clean 5V rail for all components
-  + 1-1.5 hours runtime typical
-  + Simple, no voltage converters needed
-* Low-side **MOSFET trigger module** (AOD4184-style):
-  + Built-in flyback diode + status LED
-  + 3.3 V logic input, 5V coil output
-  + Much more maker-friendly than raw MOSFET wiring
-* Finalized **pinout** to avoid conflicts with ES8388 codec and onboard buttons:
-  + GPIO 22 â **MOSFET gate** (coil PWM)
-  + GPIO 21 â **WS2812B LED DIN**
-  + ES8388 on standard IÂ²S pins (27 / 25 / 26 / 35 / 0)
+### Documentation
+- Complete rewrite of README.md with battery system
+- New WIRING.md with 4x18650 setup
+- New BOM.md (Bill of Materials)
+- New CONTRIBUTING.md with crowdfunding acknowledgment
+- New TROUBLESHOOTING.md with comprehensive solutions
+- Updated LICENSE with MakerWorld crowdfunding attribution
+- New commands.md with all serial commands documented
 
 ---
 
-## Table of Contents
+## [1.0.0] - 2024-11-XX
 
-* [Features](#features)
-* [Hardware](#hardware)
-* [Button Controls](#button-controls)
-* [Wiring](#wiring-quick-reference)
-* [Power](#power-4x18650-battery-system)
-* [Pinout](#pinout)
-* [Firmware Setup](#firmware-setup-arduino-ide)
-* [Required Libraries](#required-libraries)
-* [Build & Upload](#build--upload)
-* [Serial Commands](#serial-tuning-panel)
-* [How to Use](#how-to-use)
-* [Troubleshooting](#troubleshooting)
-* [Contributing](#contributing)
-* [License](#license)
+### Added
+- **8 Magnet Behavior Modes**: SMOOTH, SPIKE, BOUNCE, CHAOS, PULSE, WAVE, TREMOLO, BREATH
+- **10 LED Visual Effects**: Rainbow, Spectrum, VU-Meter, Pulse, Bass Glow, Fire, Ocean, Strobe, Chase, Sparkle
+- **Serial Tuning Panel**: Live parameter adjustment via Serial Monitor
+- **PWM Frequency Control**: Adjustable from 1-5000 Hz (`f<num>`)
+- **Sensitivity Control**: 0-200% gain adjustment (`s<num>`)
+- **Attack/Release Control**: Independent envelope shaping (`a<num>`, `r<num>`)
+- **Duty Cycle Control**: Max and base duty settings (`d<num>`, `b<num>`)
+- **Spike Intensity**: Extra boost for transient modes (`p<num>`)
+- **LED Brightness Control**: 0-255 brightness levels (`l<num>`)
+- **Test Pulse Command**: 2-second full-power test (`t`)
+- **Status Commands**: Show settings (`?`), list modes (`m`, `n`)
+- Bluetooth A2DP audio sink
+- ES8388 audio codec support
+- Multi-envelope audio analysis (fast, slow, peak, ultra-slow)
+- MOSFET trigger module support with built-in flyback protection
+- USB-C PD power support (later replaced with battery)
 
----
+### Hardware
+- ESP32-A1S Audio Kit v2.2 support
+- WS2812B LED ring control (GPIO 21)
+- Electromagnet PWM control (GPIO 22)
+- AOD4184 MOSFET trigger module integration
 
-## Features
-
-* **Dual Input Sources**:
-  + **Bluetooth A2DP sink** for wireless audio
-  + **AUX/Line-In** with auto-detection (switches when cable is plugged in)
-* **Six Physical Buttons** for standalone operation:
-  + Cycle magnet modes (up/down)
-  + Cycle LED effects (up/down)
-  + Switch EQ presets (up/down)
-* **8 Magnet Behavior Modes**:
-  + SMOOTH, SPIKE, BOUNCE, CHAOS, PULSE, WAVE, TREMOLO, BREATH
-* **10 LED Visual Effects**:
-  + Rainbow, Spectrum, VU-Meter, Pulse, Bass Glow, Fire, Ocean, Strobe, Chase, Sparkle
-* **8 EQ Presets**:
-  + Flat, Bass Boost, Treble, Vocal, Rock, Electronic, Jazz, Classical
-* **Magnet control** via LEDC **PWM** on GPIO 22 with:
-  + Adjustable frequency (1-5000 Hz)
-  + Tunable duty window and sensitivity
-  + Real-time envelope followers
-* **Serial tuning panel** for advanced control:
-  + Live parameter adjustment
-  + Test pulses and diagnostics
-  + Status readouts
-* Designed to be **stable on ESP32 core 2.0.14**
+### Documentation
+- Initial README.md
+- Serial commands reference
+- Wiring instructions
+- Preset recommendations
 
 ---
 
-## Hardware
+## [0.5.0] - 2024-10-XX (Pre-release)
 
-### Required Components
+### Added
+- Basic ferrofluid control via Bluetooth audio
+- Simple PWM electromagnet driving
+- Basic LED strip support
+- Prototype firmware testing
 
-* **ESP32-A1S / ESP32-Audio-Kit v2.2** (with **ES8388** codec)
-* **WS2812B LED ring** (24 LEDs recommended)
-* **Low-side MOSFET trigger module** (AOD4184 or similar)
-* **Electromagnet** (5V, 1-2A)
-* **4x18650 Battery Pack** with 5V output
-* **Breadboard Power Module**
-* **Ferrofluid display container**
-
-See [BOM.md](BOM.md) for complete bill of materials.
-
----
-
-## Button Controls
-
-| Button | GPIO | Function | Action |
-|--------|------|----------|--------|
-| **Button 1** | GPIO 36 | Magnet Mode | Cycle UP through 8 modes |
-| **Button 2** | GPIO 39 | Magnet Mode | Cycle DOWN through 8 modes |
-| **Button 3** | GPIO 34 | LED Effect | Cycle UP through 10 effects |
-| **Button 4** | GPIO 35 | LED Effect | Cycle DOWN through 10 effects |
-| **Button 5** | GPIO 32 | EQ Preset | Cycle UP through 8 presets |
-| **Button 6** | GPIO 33 | EQ Preset | Cycle DOWN through 8 presets |
+### Initial Concept
+- ESP32-based audio reactive ferrofluid
+- Breadboard prototype
+- Manual parameter tuning in code
 
 ---
 
-## Wiring (quick reference)
+## Crowdfunding Campaign
 
-```
-4x18650 Battery Pack (5V Output)
-         |
-    Power Switch
-         |
-  Breadboard Power Module
-    (+ and - rails)
-         |
-         âââ> ESP32-A1S (5V + GND)
-         âââ> LED Ring (5V + GND)
-         âââ> Electromagnet + (5V)
+**FerroWave was successfully crowdfunded on MakerWorld!**
 
-LED Ring DIN ââ> GPIO 21 (through 330Î© resistor)
-ESP32 GPIO 22 ââ> MOSFET Gate
-```
+Campaign: https://makerworld.com/en/crowdfunding/70-ferrowave
 
-See [wiring.md](wiring.md) for complete instructions.
+Special thanks to all backers who made this project possible. Your support brought FerroWave from concept to reality.
 
 ---
 
-## Power (4x18650 Battery System)
+## Future Roadmap
 
-* **Portable operation** with rechargeable batteries
-* **1-1.5 hours** typical runtime
-* **2-4A** typical draw, up to 5A peak
-* Uses quality protected 18650 cells (Samsung, LG, Sony, Panasonic)
+### Planned for v2.1
+- [ ] 3D-printable enclosure design
+- [ ] Battery level indicator
+- [ ] Power-saving sleep mode
+- [ ] Preset save/load functionality
+- [ ] OLED display for status
 
----
+### Planned for v3.0
+- [ ] Web interface for wireless configuration
+- [ ] MIDI control support
+- [ ] Multiple coil support (3D movement)
+- [ ] Smartphone app
+- [ ] Advanced audio analysis (FFT)
 
-## Pinout
-
-**Control:**
-* GPIO 22 â MOSFET gate (PWM)
-* GPIO 21 â LED ring DIN
-
-**Buttons:**
-* GPIO 36, 39, 34, 35, 32, 33 (built-in)
-
-**IÂ²S Audio:**
-* GPIO 27 â BCK
-* GPIO 25 â WS
-* GPIO 26 â DATA_OUT
-
----
-
-## Firmware Setup (Arduino IDE)
-
-1. Install **ESP32 board support** (v2.0.14 — use this exact version, not the latest)
-2. Select **"ESP32 Dev Module"**
-3. Install required libraries (see below)
-4. Upload firmware
-5. Connect via Bluetooth or AUX
+### Under Consideration
+- [ ] Microphone input for acoustic response
+- [ ] SD card for storing presets
+- [ ] Real-time frequency analysis visualization
+- [ ] Integration with music streaming services
 
 ---
 
-## Required Libraries
+## Version Numbering
 
-Install via Arduino Library Manager:
+FerroWave follows Semantic Versioning:
 
-1. **AudioTools** by pschatzmann
-2. **ESP32-A2DP** by pschatzmann
-3. **Adafruit NeoPixel** by Adafruit
-
-See [libraries.md](libraries.md) for detailed installation.
+- **MAJOR** version: Incompatible hardware or API changes
+- **MINOR** version: New features in backwards-compatible manner
+- **PATCH** version: Backwards-compatible bug fixes
 
 ---
 
-## Build & Upload
+## Links
 
-1. Clone repository
-2. Open `.ino` file in Arduino IDE
-3. Select COM port
-4. Press **Upload**
-5. Open Serial Monitor (115200 baud)
-6. Connect and play music!
+- **Repository**: https://github.com/matoslav/FerroWave
+- **Crowdfunding**: https://makerworld.com/en/crowdfunding/70-ferrowave
+- **Issues**: https://github.com/matoslav/FerroWave/issues
+- **Discussions**: https://github.com/matoslav/FerroWave/discussions
 
 ---
 
-## Serial Tuning Panel
-
-**Magnet Modes (1-8):**
-```
-1=SMOOTH  2=SPIKE  3=BOUNCE  4=CHAOS
-5=PULSE   6=WAVE   7=TREMOLO 8=BREATH
-```
-
-**LED Modes (c1-c10):**
-```
-c1=Rainbow  c2=Spectrum  c3=Pulse    c4=VU-Meter  c5=Bass Glow
-c6=Fire     c7=Ocean     c8=Strobe   c9=Chase     c10=Sparkle
-```
-
-**Parameters:**
-```
-f<num> = PWM frequency    s<num> = Sensitivity
-a<num> = Attack speed     r<num> = Release speed
-d<num> = Max duty         b<num> = Base duty
-p<num> = Spike intensity  l<num> = LED brightness
-v<num> = Volume
-```
-
-**Utilities:**
-```
-? = Show settings    t = Test pulse
-m = List modes       n = List LED modes
-aux = Switch to AUX  bt = Switch to Bluetooth
-```
-
-See [commands.md](commands.md) for complete reference.
-
----
-
-## How to Use
-
-### Standalone (No Computer)
-1. Power on
-2. Connect Bluetooth or plug AUX cable
-3. Play music
-4. Use buttons to control presets
-
-### Advanced (Serial Monitor)
-1. Connect USB
-2. Open Serial Monitor (115200 baud)
-3. Use commands for fine tuning
-4. Type `?` for current settings
-
----
-
-## Troubleshooting
-
-**No power?** Check battery charge and connections  
-**No audio?** Verify Bluetooth pairing or AUX cable  
-**Coil not working?** Test with `t` command  
-**LEDs dark?** Try `l255` and check GPIO 21
-
-See [troubleshooting.md](troubleshooting.md) for complete guide.
-
----
-
-## Contributing
-
-Contributions welcome! See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
-
-**This project was crowdfunded by the MakerWorld community!**
-
----
-
-## Community & Support
-
-* **Issues**: [GitHub Issues](https://github.com/matoslav/FerroWave/issues)
-* **Discussions**: [GitHub Discussions](https://github.com/matoslav/FerroWave/discussions)
-* **MakerWorld**: https://makerworld.com/en/crowdfunding/70-ferrowave
-
-If you want to support me and my FerroWave development, you can buy me a coffee at: https://ko-fi.com/makarov87
-
----
-
-## Credits
-
-**Created by**: Makarov87  
-**Crowdfunded by**: MakerWorld Community
-
-**Libraries:**
-* [AudioTools](https://github.com/pschatzmann/arduino-audio-tools) by pschatzmann
-* [ESP32-A2DP](https://github.com/pschatzmann/ESP32-A2DP) by pschatzmann
-* [Adafruit NeoPixel](https://github.com/adafruit/Adafruit_NeoPixel) by Adafruit
-
-**Special Thanks:**
-* All MakerWorld backers
-* Open-source Arduino and ESP32 communities
-* Everyone who contributed ideas and feedback
-
----
-
-## License
-
-MIT License - See [LICENSE](LICENSE) file.
-
+**Project**: FerroWave  
 **Author**: Makarov87  
-**Crowdfunded by**: MakerWorld Community
-
-When using or modifying FerroWave:
-- Credit Makarov87
-- Link to https://github.com/matoslav/FerroWave
-- Acknowledge MakerWorld crowdfunding
-
----
-
-**Created by Makarov87**  
-**Crowdfunded by the MakerWorld Community**  
-**Built with â¤ï¸ and ferrofluid**
-
-Thank you to all MakerWorld backers! ð
+**Crowdfunded by**: MakerWorld Community  
+**License**: MIT
