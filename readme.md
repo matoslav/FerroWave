@@ -4,7 +4,7 @@ Audio-reactive **ferrofluid visualizer** built on **ESP32-A1S (ES8388)**.
 Streams Bluetooth audio (A2DP) or AUX input into the on-board codec, extracts live envelopes, and drives:
 
 * a **coil + MOSFET trigger module** (PWM on GPIO 22) for ferrofluid motion
-* a **WS2812B LED ring** (GPIO 23) for synced visuals
+* a **WS2812B LED ring** (GPIO 21) for synced visuals
 * **Six onboard buttons** for live preset control (no computer needed!)
 
 > Created by **Makarov87** and **crowdfunded by the MakerWorld community**.  
@@ -56,7 +56,7 @@ This repo reflects the **latest "AUX + Button Control Edition"** firmware with t
   + Much more maker-friendly than raw MOSFET wiring
 * Finalized **pinout** to avoid conflicts with ES8388 codec and onboard buttons:
   + GPIO 22 â **MOSFET gate** (coil PWM)
-  + GPIO 23 â **WS2812B LED DIN**
+  + GPIO 21 â **WS2812B LED DIN**
   + ES8388 on standard IÂ²S pins (27 / 25 / 26 / 35 / 0)
 
 ---
@@ -150,7 +150,7 @@ See [BOM.md](BOM.md) for complete bill of materials.
          âââ> LED Ring (5V + GND)
          âââ> Electromagnet + (5V)
 
-LED Ring DIN ââ> GPIO 23 (through 330Î© resistor)
+LED Ring DIN ââ> GPIO 21 (through 330Î© resistor)
 ESP32 GPIO 22 ââ> MOSFET Gate
 ```
 
@@ -171,7 +171,7 @@ See [wiring.md](wiring.md) for complete instructions.
 
 **Control:**
 * GPIO 22 â MOSFET gate (PWM)
-* GPIO 23 â LED ring DIN
+* GPIO 21 â LED ring DIN
 
 **Buttons:**
 * GPIO 36, 39, 34, 35, 32, 33 (built-in)
@@ -271,7 +271,7 @@ See [commands.md](commands.md) for complete reference.
 **No power?** Check battery charge and connections  
 **No audio?** Verify Bluetooth pairing or AUX cable  
 **Coil not working?** Test with `t` command  
-**LEDs dark?** Try `l255` and check GPIO 23
+**LEDs dark?** Try `l255` and check GPIO 21
 
 See [troubleshooting.md](troubleshooting.md) for complete guide.
 
