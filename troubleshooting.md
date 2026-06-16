@@ -482,7 +482,7 @@ A fatal error occurred: Timed out waiting for packet header
 
 2. **Check Data Connection**
    ```
-   - GPIO 23 â 330Î© resistor â LED DIN
+   - GPIO 21 â 330Î© resistor â LED DIN
    - Verify resistor is present
    - Check for broken wire
    ```
