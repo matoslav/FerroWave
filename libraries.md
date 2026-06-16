@@ -129,7 +129,7 @@ Then restart Arduino IDE.
 - Electromagnet (+) â 5V Power Supply
 
 **LED Ring (WS2812B):**
-- LED DIN â GPIO 23 (through 330Î© resistor)
+- LED DIN â GPIO 21 (through 330Î© resistor)
 - LED VCC â 5V
 - LED GND â GND
 
@@ -224,7 +224,7 @@ PSRAM: "Disabled"
 
 ### LEDs Not Working
 - Verify LED power (5V, GND)
-- Check data pin (GPIO 23) connection
+- Check data pin (GPIO 21) connection
 - Ensure 330Î© resistor is in place
 - Try reducing LED brightness: `l50` in serial
 
