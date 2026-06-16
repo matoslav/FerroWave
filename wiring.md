@@ -125,7 +125,7 @@ The 4x18650 battery pack provides a clean 5V rail for all components:
 | Pin | Function | Connection |
 |-----|----------|------------|
 | GPIO 22 | PWM Output | MOSFET Gate |
-| GPIO 23 | LED Data | WS2812B DIN (through 330Ω) |
+| GPIO 21 | LED Data | WS2812B DIN (through 330Ω) |
 | GPIO 36 | Button 1 | Magnet Mode ↑ (Built-in) |
 | GPIO 39 | Button 2 | Magnet Mode ↓ (Built-in) |
 | GPIO 34 | Button 3 | LED Mode ↑ (Built-in) |
@@ -230,13 +230,13 @@ Breadboard (+) Rail ──────>  Coil (+)
 ```
 Breadboard (+) Rail ─────────> LED Ring VCC/5V
 Breadboard (-) Rail ─────────> LED Ring GND
-ESP32 GPIO 23 ─[330Ω]──────> LED Ring DIN
+ESP32 GPIO 21 ─[330Ω]──────> LED Ring DIN
 ```
 
 ### Important Notes
 
 **Data Line Resistor:**
-- **Required**: 330Ω resistor between GPIO 23 and DIN
+- **Required**: 330Ω resistor between GPIO 21 and DIN
 - **Purpose**: Level shifting protection, signal integrity
 - **Position**: Close to ESP32 output
 
@@ -258,7 +258,7 @@ Standard WS2812B rings have 3 connections:
 |-----|------|------------|
 | 1 | VCC/5V | Breadboard + rail |
 | 2 | GND | Breadboard - rail |
-| 3 | DIN | GPIO 23 through 330Ω resistor |
+| 3 | DIN | GPIO 21 through 330Ω resistor |
 
 Some rings also have:
 - **DOUT**: Data out (for chaining, not used)
@@ -398,7 +398,7 @@ Power Module creates two rails:
 │  ESP32-A1S     │            │ MOSFET │
 │  ┌──────────┐  │            │ Module │
 │  │ GPIO 22  ├──┼────────────>  Gate  │
-│  │ GPIO 23  ├──┼─[330Ω]─┐   └────────┘
+│  │ GPIO 21  ├──┼─[330Ω]─┐   └────────┘
 │  │          │  │         │       │
 │  │   5V     │<─┘         │     Drain
 │  │   GND    │<───────────┤       │
@@ -415,7 +415,7 @@ Power Module creates two rails:
                             │   │   │
                             │   │   └───> (-) Rail
                             │   └───────> (+) Rail
-                            └───────────> GPIO 23
+                            └───────────> GPIO 21
 ```
 
 ---
@@ -464,7 +464,7 @@ Power Module creates two rails:
 ### Step 6: Wire LED Ring
 
 1. Solder 330Ω resistor to a wire
-2. Connect resistor to GPIO 23
+2. Connect resistor to GPIO 21
 3. Connect other end of resistor to LED DIN
 4. Connect LED VCC to breadboard (+) rail
 5. Connect LED GND to breadboard (-) rail
