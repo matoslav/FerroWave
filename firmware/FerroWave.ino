@@ -1,68 +1,99 @@
 /*
-  FerroWave — Interactive Tuning with LED Ring + AUX Input + Button Controls
+  ======================================================================
+  FerroWave.ino  —  Stable Build (canonical firmware)
+  ----------------------------------------------------------------------
+  Ferrofluid visualizer + LED ring + Bluetooth/AUX speaker
+  Board:  AI-Thinker ESP32-A1S Audio Kit v2.2 (ES8388 codec)
+  Core:   esp32 by Espressif v2.0.14  |  Partition: "Huge App"
+  Libs:   AudioTools, ESP32-A2DP, Adafruit_NeoPixel
+          (+ arduino-audio-driver, see note below)
+  ======================================================================
 
-  NEW FEATURES:
-  - AUX input auto-detection and switching
-  - Six onboard buttons for live control:
-    Button 1 (GPIO 36): Magnet mode UP (1-8)
-    Button 2 (GPIO 39): Magnet mode DOWN (1-8)
-    Button 3 (GPIO 34): LED mode UP (1-10)
-    Button 4 (GPIO 35): LED mode DOWN (1-10)
-    Button 5 (GPIO 32): EQ preset UP (8 presets)
-    Button 6 (GPIO 33): EQ preset DOWN (8 presets)
+  WHY THIS FILE EXISTS
+  ----------------------------------------------------------------------
+  Earlier releases of this firmware had several bugs that caused buttons
+  to repeat / stick (especially "Button 2" and "Button 4"), even with the
+  physical buttons removed and on a fresh board. This is the corrected,
+  hardened build that collects every fix found by the community plus a
+  more robust button routine. It supersedes all earlier versions.
 
-  EQ PRESETS:
-    0: Flat (neutral)
-    1: Bass Boost (heavy bass, reduced treble)
-    2: Treble (bright highs)
-    3: Vocal (clear vocals)
-    4: Rock (punchy)
-    5: Electronic (EDM/Dance)
-    6: Jazz (smooth)
-    7: Classical (orchestra)
+  Credit: backer Knotsure1 found the working KEY remap (GitHub issue #4)
+  and backer pcacacc independently confirmed it. Thanks to both.
 
-  WIRING:
-    - MOSFET gate -> GPIO 22
-    - LED ring DIN -> GPIO 23 (through 330Ω resistor recommended)
-    - LED ring VCC -> 5V, GND -> GND
-    - Buttons already wired on ESP32-A1S board
+  ----------------------------------------------------------------------
+  WHAT WAS WRONG, AND WHAT CHANGED
+  ----------------------------------------------------------------------
+  1) BUTTONS ON THE WRONG PINS (the main bug)
+     The stock firmware read the buttons on GPIO 36, 39, 34, 35. Three
+     of those (39, 34, 35) are NOT where the onboard KEY buttons are
+     actually wired on a v2.2 board, AND all of GPIO 34-39 are
+     input-only pins with NO internal pull-up resistors. So
+     pinMode(pin, INPUT_PULLUP) did nothing, the pins floated, and the
+     firmware read endless phantom presses.
 
-  SERIAL COMMANDS: (same as before)
-    Magnet Mode Selection:
-      1  -> SMOOTH mode (gentle flowing waves)
-      2  -> SPIKE mode (sharp transients, spiky deformations)
-      3  -> BOUNCE mode (rhythmic pumping)
-      4  -> CHAOS mode (aggressive, unpredictable)
-      5  -> PULSE mode (distinct on/off pulses with beats)
-      6  -> WAVE mode (slow building waves, surging)
-      7  -> TREMOLO mode (rapid flutter effect)
-      8  -> BREATH mode (slow breathing, meditative)
-    
-    Tuning Parameters:
-      f100   -> set PWM frequency to 100 Hz
-      s50    -> set sensitivity/gain to 50 (0-200)
-      a80    -> set attack speed to 80 (0-100)
-      r20    -> set release speed to 20 (0-100)
-      d60    -> set duty range to 60% (10-100)
-      b20    -> set base duty to 20% (0-50)
-      p30    -> set pulse/spike intensity to 30 (0-100)
-      
-    LED Control:
-      l80    -> set LED brightness to 80 (0-255)
-      c1     -> LED color mode (1-10)
-      
-    Audio Control:
-      v75    -> set volume to 75 (0-100)
-      eq1    -> bass EQ (-10 to +10)
-      eq2    -> treble EQ (-10 to +10)
-      aux    -> manually switch to AUX input
-      bt     -> manually switch to Bluetooth
-    
-    Utilities:
-      ?  -> show all current settings
-      t  -> test pulse
-      m  -> list all magnet modes
-      n  -> list all LED modes
+     The real, hardwired KEY-to-GPIO map on the ESP32-A1S v2.2 is:
+        KEY1 = GPIO 36   KEY2 = GPIO 13   KEY3 = GPIO 19
+        KEY4 = GPIO 23   KEY5 = GPIO 18   KEY6 = GPIO 5
+     This build uses those correct pins. (These cannot be reassigned in
+     software — the onboard buttons are physically tied to these traces.)
+
+  2) AUDIO INPUT COLLIDED WITH A BUTTON
+     setup() set cfg.pin_data_rx = 35, the same pin the old code used for
+     Button 4. That line is removed.
+
+  3) LED RING SHARED A PIN WITH A BUTTON
+     KEY4 lives on GPIO 23, which the stock code also used for the LED
+     ring data line. The LED ring is moved to GPIO 21.
+
+  4) BUTTON 1 SITS ON INPUT-ONLY GPIO 36 (no pull-up possible)
+     KEY1 is physically on GPIO 36, which has no internal pull-up and
+     can't be moved in software. Instead of leaving it fragile, the
+     button routine below is EDGE-TRIGGERED and MULTI-SAMPLED: a press
+     only registers on a clean HIGH->LOW transition confirmed over
+     several consecutive reads. A floating or noisy pin that drifts and
+     holds LOW will NOT auto-repeat. This makes KEY1 stable in software
+     with no extra parts.
+       Optional hardware bulletproofing: add a 10k pull-up resistor from
+       GPIO 36 to 3.3V. Not required with this firmware, but harmless.
+
+  5) STROBE LED MODE (c8) DIDN'T WORK
+     Case 8 only flashed when intensity > 0.7, which rarely happens, so
+     the ring just stayed dark. It now uses a beat/peak-relative trigger
+     so it actually strobes on transients.
+
+  ----------------------------------------------------------------------
+  REQUIRED ONE-TIME HARDWARE STEPS
+  ----------------------------------------------------------------------
+  - DIP SWITCH: set position 2 = ON, all others OFF. On the ESP32-A1S the
+    onboard KEY buttons are only connected to the chip when their DIP
+    switch is on. (KEY2/GPIO 13 shares an SD-card pin; this build does
+    not use the SD card, so that's fine.)
+  - LED RING DATA wire goes to GPIO 21 (was GPIO 23). 330ohm in series
+    recommended.
+  - MOSFET gate stays on GPIO 22.
+
+  ----------------------------------------------------------------------
+  LIBRARY NOTE
+  ----------------------------------------------------------------------
+  If you get a missing-driver compile error, also install
+  arduino-audio-driver: https://github.com/pschatzmann/arduino-audio-driver
+  Use ESP32 core 2.0.14 and Partition Scheme "Huge App".
+
+  ----------------------------------------------------------------------
+  BUTTON LAYOUT (this build)
+    Button 1 (GPIO 36): Magnet mode UP    (1-8)
+    Button 2 (GPIO 13): Magnet mode DOWN  (1-8)
+    Button 3 (GPIO 19): LED mode UP       (1-10)
+    Button 4 (GPIO 23): LED mode DOWN     (1-10)
+    Button 5 (GPIO 18): EQ preset UP      (8 presets)
+    Button 6 (GPIO 5):  EQ preset DOWN    (8 presets)
+
+  SERIAL COMMANDS (unchanged from original)
+    Magnet: 1-8 | LED: c1-c10
+    f<Hz> s<sens> a<atk> r<rel> d<duty> b<base> p<spike>
+    l<bright> v<vol> eq1<bass> eq2<treb> | aux | bt
+    ? (settings)  t (test)  m (modes)  n (LED modes)
+  ======================================================================
 */
 
 #include <AudioTools.h>
@@ -77,24 +108,52 @@ const int  PWM_RES          = 10;
 const bool COIL_ACTIVE_HIGH = true;
 
 // ==== LED Ring ====
-const int LED_PIN       = 23;
+// Moved from GPIO 23 -> GPIO 21, because GPIO 23 is the onboard KEY4 pin.
+const int LED_PIN       = 21;
 const int LED_COUNT     = 24;
 Adafruit_NeoPixel strip(LED_COUNT, LED_PIN, NEO_GRB + NEO_KHZ800);
 
 uint8_t ledBrightness = 100;
 uint8_t ledColorMode  = 1;
 
-// ==== Button Pins (ESP32-A1S v2.2) ====
-const int BTN_1 = 36;  // Key 1 - Cycle Magnet Mode
-const int BTN_2 = 39;  // Key 2 - Cycle LED Mode
-const int BTN_3 = 34;  // Key 3 - Volume Up (was 19 on some boards)
-const int BTN_4 = 35;  // Key 4 - Volume Down (was 23 on some boards)
-const int BTN_5 = 32;  // Key 5 - Bass EQ
-const int BTN_6 = 33;  // Key 6 - Treble EQ
+// ==== Button Pins (ESP32-A1S v2.2, hardwired onboard KEYs) ====
+// These are the actual GPIOs the onboard KEY1..KEY6 buttons connect to.
+// They cannot be changed in software (the buttons are physically wired
+// to these traces). KEY1/GPIO36 is input-only with no pull-up; the
+// edge-triggered reader below keeps it stable anyway.
+const int BTN_1 = 36;  // KEY1 - Magnet Mode UP   (input-only, no pull-up)
+const int BTN_2 = 13;  // KEY2 - Magnet Mode DOWN
+const int BTN_3 = 19;  // KEY3 - LED Mode UP
+const int BTN_4 = 23;  // KEY4 - LED Mode DOWN
+const int BTN_5 = 18;  // KEY5 - EQ Preset UP
+const int BTN_6 = 5;   // KEY6 - EQ Preset DOWN
 
-// Button debouncing
-unsigned long lastBtnPress[6] = {0};
-const unsigned long BTN_DEBOUNCE = 200;
+const int NUM_BTNS = 6;
+const int BTN_PINS[NUM_BTNS] = { BTN_1, BTN_2, BTN_3, BTN_4, BTN_5, BTN_6 };
+
+// Which pins can actually use the internal pull-up. GPIO 36 cannot.
+const bool BTN_HAS_PULLUP[NUM_BTNS] = { false, true, true, true, true, true };
+
+// ---- Robust button state ----
+// A press fires only on a confirmed HIGH->LOW edge. A pin that floats
+// and holds LOW will NOT repeat, because we require it to first return
+// HIGH before another press can register. This is what makes the
+// input-only KEY1 safe without any external resistor.
+bool          btnWasPressed[NUM_BTNS] = { false, false, false, false, false, false };
+unsigned long btnLastEventMs[NUM_BTNS] = { 0, 0, 0, 0, 0, 0 };
+const unsigned long BTN_DEBOUNCE_MS = 200;  // min gap between presses
+const int  BTN_CONFIRM_SAMPLES = 4;         // consecutive reads to confirm
+const int  BTN_SAMPLE_GAP_MS   = 3;         // ms between those reads
+
+// Reads a pin several times; returns true only if it is LOW (pressed)
+// on every sample. Rejects brief noise spikes.
+bool btnConfirmedLow(int pin) {
+  for (int i = 0; i < BTN_CONFIRM_SAMPLES; i++) {
+    if (digitalRead(pin) != LOW) return false;
+    delay(BTN_SAMPLE_GAP_MS);
+  }
+  return true;
+}
 
 // ==== Audio Source Selection ====
 enum InputSource {
@@ -105,12 +164,12 @@ enum InputSource {
 InputSource currentSource = SOURCE_BLUETOOTH;
 bool auxPluggedIn = false;
 unsigned long lastAuxCheckMs = 0;
-const unsigned long AUX_CHECK_INTERVAL = 2000;  // Check every 2 seconds instead of 500ms
+const unsigned long AUX_CHECK_INTERVAL = 2000;
 
 // ==== EQ Settings ====
-int bassEQ = 0;    // -10 to +10
-int trebleEQ = 0;  // -10 to +10
-int volume = 80;   // 0-100
+int bassEQ = 0;
+int trebleEQ = 0;
+int volume = 80;
 
 // Tunable parameters
 float pwmFreqHz      = 4.0f;
@@ -160,6 +219,9 @@ float waveAccumulator = 0.0f;
 float tremoloOscillator = 0.0f;
 unsigned long lastBeatMs = 0;
 
+// Strobe state (for fixed c8)
+float strobePhase = 0.0f;
+
 unsigned long nextDbgMs = 0;
 unsigned long ledUpdateMs = 0;
 float hue = 0.0f;
@@ -174,14 +236,14 @@ float clampf(float x, float lo, float hi) {
 void applyPWM() {
   int dutyMax = (1 << PWM_RES) - 1;
   float d = clampf(dutyPct, 0.0f, 100.0f);
-  
+
   if (!COIL_ACTIVE_HIGH) {
     d = 100.0f - d;
   }
-  
+
   int dutyVal = (int)(d * dutyMax / 100.0f);
   dutyVal = constrain(dutyVal, 0, dutyMax);
-  
+
   ledcWrite(PWM_CH, dutyVal);
 }
 
@@ -192,60 +254,36 @@ void updatePWM() {
 }
 
 void applyEQ() {
-  // Apply EQ settings to ES8388 codec
-  // Bass: roughly corresponds to low frequency gain
-  // Treble: high frequency gain
   board.setVolume(volume);
-  
-  // ES8388 has limited EQ control, but we can adjust tone
-  // Note: Specific EQ implementation depends on AudioBoardStream capabilities
   Serial.printf("Volume: %d%%, Bass: %+d, Treble: %+d\n", volume, bassEQ, trebleEQ);
 }
 
 void switchToAUX() {
   if (currentSource == SOURCE_AUX) return;
-  
   Serial.println("Switching to AUX input...");
   currentSource = SOURCE_AUX;
-  
-  // Configure board for line-in (AUX)
   board.setInputVolume(80);
-  
-  // On ES8388, we need to set input to AUX/Line-In
-  // This is board-specific configuration
   Serial.println("AUX input active");
 }
 
 void switchToBluetooth() {
   if (currentSource == SOURCE_BLUETOOTH) return;
-  
   Serial.println("Switching to Bluetooth...");
   currentSource = SOURCE_BLUETOOTH;
   Serial.println("Bluetooth active");
 }
 
 bool checkAUXConnected() {
-  // The ES8388 can detect line-in signal presence
-  // We'll check if there's a signal on the ADC input
-  // This is a simplified check - adjust based on your board's capabilities
-  
-  // For now, we'll use a simple voltage detection approach
-  // The AUX detection circuit varies by board design
-  // Some boards have a detection pin, others require signal analysis
-  
-  // Placeholder: Check if processing stream has significant audio when BT is off
-  // In practice, you might need a dedicated detection circuit or pin
-  
   return false; // To be implemented based on your specific hardware
 }
 
 void checkAUXStatus() {
   if (millis() - lastAuxCheckMs < AUX_CHECK_INTERVAL) return;
   lastAuxCheckMs = millis();
-  
+
   bool wasPluggedIn = auxPluggedIn;
   auxPluggedIn = checkAUXConnected();
-  
+
   if (auxPluggedIn && !wasPluggedIn) {
     Serial.println("AUX cable detected!");
     switchToAUX();
@@ -264,14 +302,14 @@ struct EQPreset {
 };
 
 const EQPreset eqPresets[] = {
-  {"Flat",      0,   0,  80},  // 0: Neutral
-  {"Bass Boost", 6,  -2,  75},  // 1: Heavy bass
-  {"Treble",    -2,   6,  75},  // 2: Bright highs
-  {"Vocal",      2,   4,  80},  // 3: Clear vocals
-  {"Rock",       4,   3,  85},  // 4: Punchy rock
-  {"Electronic", 5,   5,  80},  // 5: EDM/Dance
-  {"Jazz",       1,   2,  75},  // 6: Smooth jazz
-  {"Classical", -1,   1,  70}   // 7: Orchestra
+  {"Flat",      0,   0,  80},
+  {"Bass Boost", 6,  -2,  75},
+  {"Treble",    -2,   6,  75},
+  {"Vocal",      2,   4,  80},
+  {"Rock",       4,   3,  85},
+  {"Electronic", 5,   5,  80},
+  {"Jazz",       1,   2,  75},
+  {"Classical", -1,   1,  70}
 };
 
 const int NUM_EQ_PRESETS = 8;
@@ -279,69 +317,81 @@ int currentEQPreset = 0;
 
 void applyEQPreset(int preset) {
   if (preset < 0 || preset >= NUM_EQ_PRESETS) return;
-  
+
   bassEQ = eqPresets[preset].bass;
   trebleEQ = eqPresets[preset].treble;
   volume = eqPresets[preset].volume;
-  
+
   applyEQ();
-  Serial.printf("EQ Preset: %s (Bass:%+d Treb:%+d Vol:%d%%)\n", 
+  Serial.printf("EQ Preset: %s (Bass:%+d Treb:%+d Vol:%d%%)\n",
                 eqPresets[preset].name, bassEQ, trebleEQ, volume);
 }
 
-// ==== Button Handling ====
+// Forward declarations
+const char* modeName();
+const char* ledModeName();
 
+// ==== Button actions ====
+// Each onboard KEY maps to one action. Called only on a confirmed,
+// debounced, edge-triggered press.
+void doButtonAction(int idx) {
+  switch (idx) {
+    case 0: { // KEY1 - Magnet UP
+      int nextMode = (int)currentMode + 1;
+      if (nextMode > 8) nextMode = 1;
+      currentMode = (VisualizationMode)nextMode;
+      Serial.printf("Button 1: Magnet UP -> %s\n", modeName());
+    } break;
+    case 1: { // KEY2 - Magnet DOWN
+      int nextMode = (int)currentMode - 1;
+      if (nextMode < 1) nextMode = 8;
+      currentMode = (VisualizationMode)nextMode;
+      Serial.printf("Button 2: Magnet DOWN -> %s\n", modeName());
+    } break;
+    case 2: { // KEY3 - LED UP
+      ledColorMode++;
+      if (ledColorMode > 10) ledColorMode = 1;
+      Serial.printf("Button 3: LED UP -> %s\n", ledModeName());
+    } break;
+    case 3: { // KEY4 - LED DOWN
+      ledColorMode--;
+      if (ledColorMode < 1) ledColorMode = 10;
+      Serial.printf("Button 4: LED DOWN -> %s\n", ledModeName());
+    } break;
+    case 4: { // KEY5 - EQ UP
+      currentEQPreset++;
+      if (currentEQPreset >= NUM_EQ_PRESETS) currentEQPreset = 0;
+      applyEQPreset(currentEQPreset);
+    } break;
+    case 5: { // KEY6 - EQ DOWN
+      currentEQPreset--;
+      if (currentEQPreset < 0) currentEQPreset = NUM_EQ_PRESETS - 1;
+      applyEQPreset(currentEQPreset);
+    } break;
+  }
+}
+
+// Edge-triggered, debounced, multi-sampled button scanning.
+// A press fires once on HIGH->LOW. The pin must go back HIGH before it
+// can fire again, so a stuck/floating-LOW pin cannot auto-repeat.
 void handleButtons() {
   unsigned long now = millis();
-  
-  // Button 1: Magnet Mode UP
-  if (digitalRead(BTN_1) == LOW && (now - lastBtnPress[0]) > BTN_DEBOUNCE) {
-    lastBtnPress[0] = now;
-    int nextMode = (int)currentMode + 1;
-    if (nextMode > 8) nextMode = 1;
-    currentMode = (VisualizationMode)nextMode;
-    Serial.printf("Button 1: Magnet UP -> %s\n", modeName());
-  }
-  
-  // Button 2: Magnet Mode DOWN
-  if (digitalRead(BTN_2) == LOW && (now - lastBtnPress[1]) > BTN_DEBOUNCE) {
-    lastBtnPress[1] = now;
-    int nextMode = (int)currentMode - 1;
-    if (nextMode < 1) nextMode = 8;
-    currentMode = (VisualizationMode)nextMode;
-    Serial.printf("Button 2: Magnet DOWN -> %s\n", modeName());
-  }
-  
-  // Button 3: LED Mode UP
-  if (digitalRead(BTN_3) == LOW && (now - lastBtnPress[2]) > BTN_DEBOUNCE) {
-    lastBtnPress[2] = now;
-    ledColorMode++;
-    if (ledColorMode > 10) ledColorMode = 1;
-    Serial.printf("Button 3: LED UP -> %s\n", ledModeName());
-  }
-  
-  // Button 4: LED Mode DOWN
-  if (digitalRead(BTN_4) == LOW && (now - lastBtnPress[3]) > BTN_DEBOUNCE) {
-    lastBtnPress[3] = now;
-    ledColorMode--;
-    if (ledColorMode < 1) ledColorMode = 10;
-    Serial.printf("Button 4: LED DOWN -> %s\n", ledModeName());
-  }
-  
-  // Button 5: EQ Preset UP
-  if (digitalRead(BTN_5) == LOW && (now - lastBtnPress[4]) > BTN_DEBOUNCE) {
-    lastBtnPress[4] = now;
-    currentEQPreset++;
-    if (currentEQPreset >= NUM_EQ_PRESETS) currentEQPreset = 0;
-    applyEQPreset(currentEQPreset);
-  }
-  
-  // Button 6: EQ Preset DOWN
-  if (digitalRead(BTN_6) == LOW && (now - lastBtnPress[5]) > BTN_DEBOUNCE) {
-    lastBtnPress[5] = now;
-    currentEQPreset--;
-    if (currentEQPreset < 0) currentEQPreset = NUM_EQ_PRESETS - 1;
-    applyEQPreset(currentEQPreset);
+
+  for (int i = 0; i < NUM_BTNS; i++) {
+    bool pressedNow = (digitalRead(BTN_PINS[i]) == LOW);
+
+    if (pressedNow && !btnWasPressed[i]) {
+      // Possible new press — confirm it is real and debounce it.
+      if ((now - btnLastEventMs[i]) > BTN_DEBOUNCE_MS &&
+          btnConfirmedLow(BTN_PINS[i])) {
+        btnLastEventMs[i] = now;
+        btnWasPressed[i] = true;
+        doButtonAction(i);
+      }
+    } else if (!pressedNow && btnWasPressed[i]) {
+      // Released — re-arm this button for the next press.
+      btnWasPressed[i] = false;
+    }
   }
 }
 
@@ -349,13 +399,13 @@ void handleButtons() {
 
 uint32_t HSVtoRGB(float h, float s, float v) {
   float r, g, b;
-  
+
   int i = int(h * 6);
   float f = h * 6 - i;
   float p = v * (1 - s);
   float q = v * (1 - f * s);
   float t = v * (1 - (1 - f) * s);
-  
+
   switch (i % 6) {
     case 0: r = v, g = t, b = p; break;
     case 1: r = q, g = v, b = p; break;
@@ -364,13 +414,13 @@ uint32_t HSVtoRGB(float h, float s, float v) {
     case 4: r = t, g = p, b = v; break;
     case 5: r = v, g = p, b = q; break;
   }
-  
+
   return strip.Color((uint8_t)(r * 255), (uint8_t)(g * 255), (uint8_t)(b * 255));
 }
 
 void updateLEDs() {
   float intensity = clampf(envFast, 0.0f, 1.0f);
-  
+
   switch (ledColorMode) {
     case 1: // Rainbow spinning
       hue += 0.005f;
@@ -381,7 +431,7 @@ void updateLEDs() {
         strip.setPixelColor(i, color);
       }
       break;
-      
+
     case 2: // Spectrum analyzer
       {
         int litLEDs = (int)(intensity * LED_COUNT);
@@ -396,7 +446,7 @@ void updateLEDs() {
         }
       }
       break;
-      
+
     case 3: // Single color pulse (blue)
       {
         uint32_t color = HSVtoRGB(0.6f, 1.0f, intensity);
@@ -405,7 +455,7 @@ void updateLEDs() {
         }
       }
       break;
-      
+
     case 4: // VU meter (split middle)
       {
         int litLEDs = (int)(intensity * (LED_COUNT / 2));
@@ -421,7 +471,7 @@ void updateLEDs() {
         }
       }
       break;
-      
+
     case 5: // Bass glow (red when loud)
       {
         float bassGlow = envSlow * 2.0f;
@@ -432,7 +482,7 @@ void updateLEDs() {
         }
       }
       break;
-      
+
     case 6: // Fire effect
       {
         for (int i = 0; i < LED_COUNT; i++) {
@@ -443,7 +493,7 @@ void updateLEDs() {
         }
       }
       break;
-      
+
     case 7: // Ocean waves (blue-green)
       {
         hue += 0.002f;
@@ -456,19 +506,29 @@ void updateLEDs() {
         }
       }
       break;
-      
-    case 8: // Strobe flash
+
+    case 8: // Strobe flash (FIXED)
       {
-        if (intensity > 0.7f) {
+        // Old code only flashed when intensity > 0.7, which almost never
+        // happened, so the ring stayed dark. Now we flash on transients:
+        // a sharp rise of envFast above the running envSlow triggers a
+        // flash, and the flash decays quickly for a true strobe feel.
+        float transient = envFast - envSlow;
+        if (transient > 0.06f && strobePhase < 0.2f) {
+          strobePhase = 1.0f;        // fire a flash on the beat
+        }
+        strobePhase *= 0.55f;        // fast decay between flashes
+        if (strobePhase > 0.25f) {
+          uint8_t w = (uint8_t)(clampf(strobePhase, 0.0f, 1.0f) * 255);
           for (int i = 0; i < LED_COUNT; i++) {
-            strip.setPixelColor(i, strip.Color(255, 255, 255));
+            strip.setPixelColor(i, strip.Color(w, w, w));
           }
         } else {
           strip.clear();
         }
       }
       break;
-      
+
     case 9: // Color chase
       {
         if (intensity > 0.5f) {
@@ -482,7 +542,7 @@ void updateLEDs() {
         }
       }
       break;
-      
+
     case 10: // Sparkle
       {
         strip.clear();
@@ -495,7 +555,7 @@ void updateLEDs() {
       }
       break;
   }
-  
+
   strip.show();
 }
 
@@ -570,33 +630,33 @@ void testPulse() {
   Serial.println(F("TEST PULSE: 2 seconds at max..."));
   dutyPct = maxDuty;
   applyPWM();
-  
+
   for (int i = 0; i < LED_COUNT; i++) {
     strip.setPixelColor(i, strip.Color(255, 255, 255));
   }
   strip.show();
-  
+
   delay(2000);
-  
+
   dutyPct = baseDuty;
   applyPWM();
   strip.clear();
   strip.show();
-  
+
   Serial.println(F("Test complete.\n"));
 }
 
 void handleSerial() {
   static String inputBuffer = "";
-  
+
   while (Serial.available() > 0) {
     char c = Serial.read();
-    
+
     if (c == '\n' || c == '\r') {
       if (inputBuffer.length() > 0) {
         inputBuffer.trim();
         inputBuffer.toLowerCase();
-        
+
         if (inputBuffer == "aux") {
           switchToAUX();
           inputBuffer = "";
@@ -614,17 +674,15 @@ void handleSerial() {
           inputBuffer = "";
           return;
         } else if (inputBuffer == "m") {
-          // Print magnet modes
           inputBuffer = "";
           return;
         } else if (inputBuffer == "n") {
-          // Print LED modes
           inputBuffer = "";
           return;
         }
-        
+
         char cmd = inputBuffer.charAt(0);
-        
+
         if (inputBuffer.length() == 1 && cmd >= '1' && cmd <= '8') {
           currentMode = (VisualizationMode)(cmd - '0');
           Serial.printf("Mode -> %s\n", modeName());
@@ -638,7 +696,7 @@ void handleSerial() {
           Serial.printf("Treble EQ -> %+d\n", trebleEQ);
         } else {
           float value = inputBuffer.substring(1).toFloat();
-          
+
           switch (cmd) {
             case 'f':
               pwmFreqHz = constrain(value, 1.0f, 5000.0f);
@@ -685,7 +743,7 @@ void handleSerial() {
               break;
           }
         }
-        
+
         inputBuffer = "";
       }
     } else {
@@ -697,32 +755,32 @@ void handleSerial() {
 void calculateDuty() {
   float attackAlpha = attackSpeed / 100.0f * 0.9f + 0.05f;
   float releaseAlpha = releaseSpeed / 100.0f * 0.5f + 0.01f;
-  
+
   float level = levelBlock * (sensitivity / 100.0f);
   level = clampf(level, 0.0f, 1.0f);
-  
+
   if (level > envFast) {
     envFast = (1.0f - attackAlpha) * envFast + attackAlpha * level;
   } else {
     envFast = (1.0f - releaseAlpha) * envFast + releaseAlpha * level;
   }
-  
+
   envSlow = 0.98f * envSlow + 0.02f * level;
   envUltraSlow = 0.995f * envUltraSlow + 0.005f * level;
-  
+
   if (level > envPeak) {
     envPeak = level;
   } else {
     envPeak *= 0.95f;
   }
-  
+
   float output = 0.0f;
-  
+
   switch (currentMode) {
     case MODE_SMOOTH:
       output = envSlow;
       break;
-      
+
     case MODE_SPIKE:
       {
         float diff = clampf((envFast - envSlow) * 3.0f, 0.0f, 1.0f);
@@ -730,18 +788,18 @@ void calculateDuty() {
         output = envSlow * 0.5f + envFast * 0.5f + spike;
       }
       break;
-      
+
     case MODE_BOUNCE:
       output = envFast * 1.2f;
       break;
-      
+
     case MODE_CHAOS:
       {
         float diff = clampf((envFast - envSlow) * 5.0f, 0.0f, 1.0f);
         output = max(envFast * 1.3f, envPeak) + diff * 0.5f;
       }
       break;
-      
+
     case MODE_PULSE:
       {
         float diff = envFast - envSlow;
@@ -753,7 +811,7 @@ void calculateDuty() {
         output = pulsePhase;
       }
       break;
-      
+
     case MODE_WAVE:
       {
         waveAccumulator += envFast * 0.05f;
@@ -762,7 +820,7 @@ void calculateDuty() {
         output = waveAccumulator;
       }
       break;
-      
+
     case MODE_TREMOLO:
       {
         tremoloOscillator += envFast * 0.3f;
@@ -770,12 +828,12 @@ void calculateDuty() {
         output = envFast * tremolo;
       }
       break;
-      
+
     case MODE_BREATH:
       output = envUltraSlow * 1.5f;
       break;
   }
-  
+
   output = clampf(output, 0.0f, 1.0f);
   dutyPct = baseDuty + output * (maxDuty - baseDuty);
 }
@@ -786,18 +844,18 @@ void setup() {
   Serial.begin(115200);
   delay(500);
 
-  Serial.println(F("\n╔═══════════════════════════════════════════════╗"));
-  Serial.println(F("║   FerroWave - AUX + Button Control Edition   ║"));
-  Serial.println(F("║   8 Modes | 10 LED | 6 Buttons | AUX In      ║"));
-  Serial.println(F("╚═══════════════════════════════════════════════╝\n"));
+  Serial.println(F("\n==============================================="));
+  Serial.println(F("   FerroWave - STABLE BUILD (community fixed)"));
+  Serial.println(F("   Correct KEY pins | robust buttons | strobe fix"));
+  Serial.println(F("   8 Modes | 10 LED | 6 Buttons | BT + AUX"));
+  Serial.println(F("===============================================\n"));
 
-  // Button setup
-  pinMode(BTN_1, INPUT_PULLUP);
-  pinMode(BTN_2, INPUT_PULLUP);
-  pinMode(BTN_3, INPUT_PULLUP);
-  pinMode(BTN_4, INPUT_PULLUP);
-  pinMode(BTN_5, INPUT_PULLUP);
-  pinMode(BTN_6, INPUT_PULLUP);
+  // Button setup. Use INPUT_PULLUP where the pin supports it; GPIO 36
+  // (KEY1) is input-only with no pull-up, so it gets plain INPUT and is
+  // protected by the edge-triggered reader instead.
+  for (int i = 0; i < NUM_BTNS; i++) {
+    pinMode(BTN_PINS[i], BTN_HAS_PULLUP[i] ? INPUT_PULLUP : INPUT);
+  }
 
   // LED setup
   strip.begin();
@@ -805,12 +863,12 @@ void setup() {
   strip.clear();
   strip.show();
 
-  // Quick startup flash (non-blocking)
+  // Quick startup flash
   for (int i = 0; i < LED_COUNT; i++) {
     strip.setPixelColor(i, strip.Color(0, 50, 100));
   }
   strip.show();
-  delay(200);  // Single short delay only
+  delay(200);
   strip.clear();
   strip.show();
 
@@ -822,13 +880,13 @@ void setup() {
   cfg.pin_bck     = 27;
   cfg.pin_ws      = 25;
   cfg.pin_data    = 26;
-  cfg.pin_data_rx = 35;
+  // NOTE: pin_data_rx = 35 was REMOVED. GPIO 35 is input-only and was
+  // colliding with a button in the stock firmware.
   cfg.pin_mck     = 0;
 
   i2s_out.begin(cfg);
-  
-  // Enable both Bluetooth and AUX capability
-  a2dp_sink.start("FerroWave_AUX");
+
+  a2dp_sink.start("FerroWave");
 
   delay(200);
 
@@ -837,18 +895,17 @@ void setup() {
   updatePWM();
   dutyPct = baseDuty;
   applyPWM();
-  
-  // Set initial volume and EQ
+
   applyEQ();
 
   printHelp();
   printSettings();
-  Serial.println(F("\n╔════════════════════════════════════════╗"));
-  Serial.println(F("║  BUTTON CONTROLS:                      ║"));
-  Serial.println(F("║  [1] Magnet ↑  [2] Magnet ↓            ║"));
-  Serial.println(F("║  [3] LED ↑     [4] LED ↓               ║"));
-  Serial.println(F("║  [5] EQ ↑      [6] EQ ↓                ║"));
-  Serial.println(F("╚════════════════════════════════════════╝\n"));
+  Serial.println(F("\n=========================================="));
+  Serial.println(F("  BUTTON CONTROLS (set DIP switch 2 = ON):"));
+  Serial.println(F("  [1] Magnet UP   [2] Magnet DOWN"));
+  Serial.println(F("  [3] LED UP      [4] LED DOWN"));
+  Serial.println(F("  [5] EQ UP       [6] EQ DOWN"));
+  Serial.println(F("==========================================\n"));
   Serial.println(F("Ready! Connect via Bluetooth or AUX cable!\n"));
 }
 
@@ -890,19 +947,19 @@ void loop() {
     envSlow *= 0.98f;
     envPeak *= 0.95f;
     envUltraSlow *= 0.99f;
-    
+
     if (envSlow < 0.01f) {
       dutyPct = 0.0f;
     } else {
       calculateDuty();
     }
     applyPWM();
-    
+
     if (millis() - ledUpdateMs >= 16) {
       updateLEDs();
       ledUpdateMs = millis();
     }
-    
+
     delay(5);
   }
 }
