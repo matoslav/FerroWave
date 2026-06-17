@@ -314,7 +314,7 @@ If you want to support me and my FerroWave development, you can buy me a coffee 
 
 ## License
 
-MIT License - See [LICENSE](LICENSE) file.
+MIT License - See the [license](license.md) file.
 
 **Author**: Makarov87  
 **Crowdfunded by**: MakerWorld Community
