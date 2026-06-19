@@ -79,6 +79,10 @@
   arduino-audio-driver: https://github.com/pschatzmann/arduino-audio-driver
   Use ESP32 core 2.0.14 and Partition Scheme "Huge App".
 
+  The AUX input feature uses the low-level ES8388 driver functions
+  (es8388.h) to enable an analog line-in bypass. See docs/AUX_INPUT.md
+  for details and the known limitation with the LED/magnet visualizer.
+
   ----------------------------------------------------------------------
   BUTTON LAYOUT (this build)
     Button 1 (GPIO 36): Magnet mode UP    (1-8)
@@ -87,6 +91,13 @@
     Button 4 (GPIO 23): LED mode DOWN     (1-10)
     Button 5 (GPIO 18): EQ preset UP      (8 presets)
     Button 6 (GPIO 5):  EQ preset DOWN    (8 presets)
+    Button 7 (GPIO 34): AUX / Bluetooth toggle
+
+  IMPORTANT: in AUX mode the audio is routed through the ES8388 codec's analog
+  bypass, so the ESP32 never receives the AUX signal. The LEDs and the magnet
+  therefore stay idle while AUX is active. We tried copying AUX audio through
+  the ESP32 so the visualizer could react to it, but on this board that
+  produced audible white-noise bursts.
 
   SERIAL COMMANDS (unchanged from original)
     Magnet: 1-8 | LED: c1-c10
@@ -99,6 +110,8 @@
 #include <AudioTools.h>
 #include <BluetoothA2DPSink.h>
 #include <AudioTools/AudioLibs/AudioBoardStream.h>
+#include <AudioBoard.h>
+#include <Driver/es8388/es8388.h>
 #include <Adafruit_NeoPixel.h>
 
 // ==== Magnet / PWM ====
@@ -127,6 +140,8 @@ const int BTN_3 = 19;  // KEY3 - LED Mode UP
 const int BTN_4 = 23;  // KEY4 - LED Mode DOWN
 const int BTN_5 = 18;  // KEY5 - EQ Preset UP
 const int BTN_6 = 5;   // KEY6 - EQ Preset DOWN
+
+const int BTN_SOURCE = 34;  // Optional external toggle for AUX / Bluetooth
 
 const int NUM_BTNS = 6;
 const int BTN_PINS[NUM_BTNS] = { BTN_1, BTN_2, BTN_3, BTN_4, BTN_5, BTN_6 };
@@ -201,6 +216,7 @@ AudioBoard       board = AudioKitEs8388V1;
 AudioBoardStream i2s_out(board);
 RingBufferStream processing_stream(4096);
 MultiOutput      duplicator;
+audio_tools::NullStream bt_null;  // Used to silence Bluetooth while AUX is active
 BluetoothA2DPSink a2dp_sink(duplicator);
 
 static const size_t SAMPLE_COUNT = 512;
@@ -258,23 +274,53 @@ void applyEQ() {
   Serial.printf("Volume: %d%%, Bass: %+d, Treble: %+d\n", volume, bassEQ, trebleEQ);
 }
 
+// -----------------------------------------------------------------------------
+// AUX input support (analog bypass on the ES8388 codec)
+// -----------------------------------------------------------------------------
+// The ESP32-A1S Audio Kit v2.2 routes the 3.5 mm AUX jack to the ES8388 line
+// inputs. We tried reading the AUX signal through the ESP32 I2S interface in
+// RXTX mode and copying it back to the DAC so the LED/magnet visualizer could
+// also react to AUX audio, but that produced audible white-noise bursts in the
+// background. The cleanest solution for this hardware is to let the ES8388
+// itself perform an analog line-in bypass:
+//   AUX jack -> ES8388 ADC mixers -> ES8388 DAC output
+// In this mode the audio never enters the ESP32, so the visualizer stays idle
+// while AUX is active. Bluetooth mode is unchanged and still drives the LEDs and
+// the magnet.
+// -----------------------------------------------------------------------------
+
 void switchToAUX() {
   if (currentSource == SOURCE_AUX) return;
   Serial.println("Switching to AUX input...");
+
+  // Keep Bluetooth paired but stop it from writing to the shared codec so the
+  // AUX bypass has exclusive use of the DAC output.
+  a2dp_sink.set_output(bt_null);
   currentSource = SOURCE_AUX;
-  board.setInputVolume(80);
-  Serial.println("AUX input active");
+
+  // ES8388 analog bypass: route line-in straight to the headphones/speakers.
+  es8388_stop(CODEC_MODE_BOTH);
+  es8388_start(CODEC_MODE_LINE_IN);
+  es8388_set_voice_volume(100);
+
+  Serial.println("AUX input active (analog bypass)");
 }
 
 void switchToBluetooth() {
   if (currentSource == SOURCE_BLUETOOTH) return;
   Serial.println("Switching to Bluetooth...");
+
+  // Restore normal I2S DAC mode for Bluetooth audio.
+  es8388_stop(CODEC_MODE_LINE_IN);
+  es8388_start(CODEC_MODE_BOTH);
   currentSource = SOURCE_BLUETOOTH;
+  a2dp_sink.set_output(duplicator);
+
   Serial.println("Bluetooth active");
 }
 
 bool checkAUXConnected() {
-  return false; // To be implemented based on your specific hardware
+  return false; // No jack-detect GPIO on the stock ESP32-A1S v2.2 board.
 }
 
 void checkAUXStatus() {
@@ -393,6 +439,25 @@ void handleButtons() {
       btnWasPressed[i] = false;
     }
   }
+}
+
+// Optional external toggle button for AUX / Bluetooth.
+// Connect a normally-open push-button between BTN_SOURCE and GND.
+void handleSourceButton() {
+  static bool lastState = HIGH;
+  static unsigned long lastToggleMs = 0;
+  bool state = digitalRead(BTN_SOURCE);
+
+  if (state == LOW && lastState == HIGH &&
+      (millis() - lastToggleMs) > BTN_DEBOUNCE_MS) {
+    lastToggleMs = millis();
+    if (currentSource == SOURCE_BLUETOOTH) {
+      switchToAUX();
+    } else {
+      switchToBluetooth();
+    }
+  }
+  lastState = state;
 }
 
 // ==== LED Functions ====
@@ -857,6 +922,9 @@ void setup() {
     pinMode(BTN_PINS[i], BTN_HAS_PULLUP[i] ? INPUT_PULLUP : INPUT);
   }
 
+  // Optional source-toggle button (AUX / Bluetooth)
+  pinMode(BTN_SOURCE, INPUT_PULLUP);
+
   // LED setup
   strip.begin();
   strip.setBrightness(ledBrightness);
@@ -905,6 +973,7 @@ void setup() {
   Serial.println(F("  [1] Magnet UP   [2] Magnet DOWN"));
   Serial.println(F("  [3] LED UP      [4] LED DOWN"));
   Serial.println(F("  [5] EQ UP       [6] EQ DOWN"));
+  Serial.println(F("  [BTN_SOURCE]    Toggle AUX / Bluetooth"));
   Serial.println(F("==========================================\n"));
   Serial.println(F("Ready! Connect via Bluetooth or AUX cable!\n"));
 }
@@ -912,6 +981,7 @@ void setup() {
 void loop() {
   handleSerial();
   handleButtons();
+  handleSourceButton();
   checkAUXStatus();
 
   size_t avail = processing_stream.available();
